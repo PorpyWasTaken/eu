@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Europe Summer 2026 — Trip Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#06060f;--card2:#111125;--pink:#f72585;--purple:#7209b7;--blue:#4cc9f0;--orange:#e07c24;--green:#52b788;--text:#fff;--muted:#ffffff88;--dim:#ffffff44;--subtle:#ffffff11}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.hero{text-align:center;padding:48px 20px 32px;background:linear-gradient(180deg,#0f0c29 0%,#1a1040 50%,var(--bg) 100%);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(247,37,133,.12) 0%,transparent 60%)}
+.hero-tag,.hero h1,.hero-sub,.hero-sub2,.tabs,.countdown{position:relative}
+.hero-tag{font-size:11px;color:var(--pink);font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:10px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(30px,6vw,48px);font-weight:900;background:linear-gradient(135deg,#f72585,#b5179e,#7209b7,#4cc9f0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.15;margin-bottom:12px}
+.hero-sub{color:var(--muted);font-size:14px}.hero-sub2{color:var(--dim);font-size:12px;margin-top:4px}
+.tabs{display:flex;justify-content:center;gap:8px;margin-top:22px;flex-wrap:wrap}
+.tab{padding:9px 22px;border-radius:24px;border:none;font-size:12px;font-weight:700;cursor:pointer;transition:all .25s;font-family:inherit}
+.tab.active{background:linear-gradient(135deg,#f72585,#7209b7);color:#fff;box-shadow:0 4px 20px rgba(247,37,133,.3)}
+.tab:not(.active){background:#ffffff0a;color:var(--muted);border:1px solid #ffffff15}
+.tab:not(.active):hover{background:#ffffff15;color:#fff}
+.container{max-width:700px;margin:0 auto;padding:20px 16px 60px}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:8px;flex-wrap:wrap}
+.toolbar button{background:none;border:1px solid #ffffff18;color:var(--dim);font-size:11px;padding:6px 14px;border-radius:10px;cursor:pointer;font-family:inherit;transition:.2s}
+.toolbar button:hover{border-color:#ffffff44;color:#fff}
+.search-box{flex:1;min-width:140px;max-width:260px;padding:8px 14px;border-radius:12px;border:1px solid #ffffff15;background:#ffffff08;color:#fff;font-size:12px;font-family:inherit;outline:none;transition:.2s}
+.search-box:focus{border-color:var(--pink)}
+.search-box::placeholder{color:var(--dim)}
+.progress-strip{display:flex;gap:2px;margin-bottom:20px}.progress-dot{flex:1;height:4px;border-radius:2px}
+.stop{background:var(--card2);border:1px solid var(--subtle);border-radius:18px;margin-bottom:14px;overflow:hidden;transition:.3s}
+.stop:hover{border-color:#ffffff22}.stop.family{background:#0a0a18;border-style:dashed}
+.stop-header{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;user-select:none}
+.stop-icon{width:54px;height:54px;border-radius:14px;flex-shrink:0;border:2px solid #ffffff18;display:flex;align-items:center;justify-content:center;font-size:28px}
+.chevron{color:var(--dim);font-size:22px;transition:transform .25s;flex-shrink:0}.chevron.open{transform:rotate(180deg)}
+.stop-body{padding:0 18px 18px;border-top:1px solid #ffffff08}
+.photo-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.photo-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:#ffffff08;border:1px solid #ffffff15;border-radius:20px;color:var(--blue);font-size:11px;font-weight:600;text-decoration:none;transition:.2s;white-space:nowrap}
+.photo-pill:hover{background:#ffffff15;border-color:var(--blue);transform:translateY(-1px)}
+.countdown{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:8px 18px;background:#ffffff0a;border:1px solid #ffffff15;border-radius:12px;font-size:12px;color:var(--muted)}
+.countdown .cd-num{color:var(--pink);font-weight:700;font-size:16px}
+.must-do{margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(247,37,133,.08),rgba(114,9,183,.08));border:1px solid rgba(247,37,133,.2);border-radius:12px}
+.must-do-label{font-size:10px;color:var(--pink);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.must-do-text{font-size:12.5px;color:#ffffffdd;line-height:1.5}
+.perday{color:var(--green);font-size:10px;font-weight:600;margin-left:6px}
+.transport{background:#0a0a1a;border-radius:13px;padding:13px 15px;margin-top:13px;border-left:3px solid var(--pink)}
+.sec-tabs{display:flex;gap:6px;margin-bottom:12px;margin-top:14px;flex-wrap:wrap}
+.sec-tab{padding:6px 16px;border-radius:20px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s}
+.si{display:flex;gap:8px;margin-bottom:7px;font-size:12.5px;color:#ffffffcc;line-height:1.55}
+.si .b{color:#ffffff33;flex-shrink:0}
+.weather{margin-top:10px;font-size:11px;color:var(--muted);background:#ffffff08;padding:6px 12px;border-radius:8px;display:inline-block}
+.hostel{margin-top:12px;font-size:12px;color:var(--muted);background:#ffffff06;padding:9px 13px;border-radius:10px}
+.bchips{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.bchip{background:#0a0a18;border-radius:8px;padding:6px 11px;font-size:11px;color:var(--muted)}
+.daytrip{margin-top:14px;background:linear-gradient(135deg,#1a0a2e,#16213e);border-radius:13px;border:1px solid rgba(247,37,133,.2);overflow:hidden}
+.daytrip-hd{padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.daytrip-hd span:first-child{font-size:13px;font-weight:700;color:var(--pink)}
+.dti{display:flex;gap:8px;margin-bottom:5px;font-size:12px;color:#ffffffcc;line-height:1.5}
+.sched-wrap{margin-top:14px}
+.sched-label{font-size:11px;color:var(--orange);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.sched-day{background:#0a0a1a;border-radius:12px;margin-bottom:8px;overflow:hidden;border:1px solid #ffffff08}
+.sched-day-hd{padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.sched-day-hd .sd-title{font-size:12px;font-weight:700;color:var(--purple)}
+.sched-day-hd .sd-sub{font-size:10px;color:var(--dim);margin-left:8px;font-weight:400}
+.sched-day-hd .sd-chev{color:var(--dim);font-size:14px;transition:transform .2s}
+.sched-day-hd .sd-chev.sdo{transform:rotate(180deg)}
+.sched-day-body{padding:0 14px 12px}
+.sched-item{font-size:11.5px;color:#ffffffbb;line-height:1.65;margin-bottom:2px;padding-left:2px}
+.budget-card{background:var(--card2);border-radius:16px;padding:22px 24px;margin-bottom:20px}
+.bar-track{background:#1a1a35;border-radius:10px;height:22px;overflow:hidden;margin:14px 0}
+.bar-fill{height:100%;background:linear-gradient(90deg,#f72585,#7209b7,#3a0ca3);border-radius:10px;transition:width .8s}
+.sbrow{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--card2);border-radius:12px;margin-bottom:8px;font-size:13px}
+.packing{background:var(--card2);border-radius:16px;padding:20px}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pitem{font-size:12px;color:var(--muted);padding:6px 10px;background:#ffffff06;border-radius:8px;cursor:pointer;transition:.2s;user-select:none}
+.pitem.chk{text-decoration:line-through;color:var(--dim);background:#ffffff03}.pitem:hover{background:#ffffff0a}
+.map-wrap{background:var(--card2);border-radius:16px;padding:20px;overflow:hidden}
+.map-legend{display:flex;gap:16px;justify-content:center;margin-top:14px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+.tl-stop{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid #ffffff08;cursor:pointer;transition:.15s}
+.tl-stop:hover{background:#ffffff04;margin:0 -12px;padding:14px 12px;border-radius:10px}
+.tl-dot{width:12px;height:12px;border-radius:6px;flex-shrink:0;margin-top:4px;border:2px solid #ffffff33}
+.tl-line{width:2px;background:#ffffff15;margin:2px 5px}
+.leaflet-popup-content-wrapper{background:#111125!important;color:#fff!important;border-radius:12px!important;box-shadow:0 8px 32px rgba(0,0,0,.5)!important}
+.leaflet-popup-tip{background:#111125!important}
+.leaflet-popup-content{font-family:'DM Sans',sans-serif!important;font-size:13px!important;margin:12px 14px!important}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#ffffff22;border-radius:3px}
+@media(max-width:480px){.pgrid{grid-template-columns:1fr}.hero h1{font-size:28px}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-tag">Summer 2026</div>
+  <h1>Europe Trip Planner</h1>
+  <div class="hero-sub">61 days · 15 countries · Jun 8 → Aug 8</div>
+  <div class="hero-sub2">🎫 Eurail 2-Month Pass · 💰 $6,000 Budget</div>
+  <div class="countdown" id="countdown"></div>
+  <div class="tabs" id="tabBar"></div>
+</div>
+<div class="container" id="app"></div>
+
+<script>
+const STOPS = [
+{id:0,city:"Germany",country:"🇩🇪",dates:"Jun 8 – 14",days:7,phase:"dad",emoji:"🏰",budget:0,tagline:"One week with Dad — beer gardens, castles & the Autobahn",grad:"linear-gradient(135deg,#1a1a2e,#2d4a22)",accent:"#2d4a22",
+activities:["Neuschwanstein Castle day trip","Berlin Wall / East Side Gallery","Brandenburg Gate + Reichstag dome","Munich Hofbräuhaus + Augustiner beer gardens","Rhine Valley or Cologne cathedral"],
+eats:["🍺 Hofbräuhaus (~€15)","🌭 Curry 36 Berlin (~€4)","🥨 Fresh bakery pretzels (~€1)"],
+nightlife:["🎵 Kreuzberg bars Berlin","🍺 Beer gardens at sunset"],
+transport:null,notes:"Enjoy it with Dad!",weather:"☀️ 18–25°C",hostelRec:null,lat:48.14,lng:11.58,
+daily:[
+{day:"Day 1 · Jun 8",title:"Arrive Munich",items:["Arrive & settle in","3pm: Walk Marienplatz, Glockenspiel at 5pm","🍽 Hofbräuhaus dinner (~€15)","Evening: English Garden walk"]},
+{day:"Day 2 · Jun 9",title:"Munich — Dachau + City",items:["9am: Dachau Memorial (S-Bahn, free entry)","2pm: Viktualienmarkt lunch","4pm: BMW Museum or Deutsches Museum","🍽 Augustiner-Keller beer garden"]},
+{day:"Day 3 · Jun 10",title:"Neuschwanstein Day Trip",items:["7am: Train to Füssen (2h, Eurail)","10am: ⭐ Neuschwanstein Castle tour (€15, book online!)","1pm: Marienbrücke bridge — THE photo spot 📸","6pm: Train back to Munich"]},
+{day:"Day 4 · Jun 11",title:"Munich → Berlin",items:["9am: 🚄 ICE Munich → Berlin (~4h, Eurail)","1pm: Arrive Berlin, check in","3pm: Berlin Wall / East Side Gallery 📸","5pm: Brandenburg Gate + Reichstag","🍽 Curry 36 — currywurst (~€4)","9pm: Kreuzberg neighborhood bars"]},
+{day:"Day 5 · Jun 12",title:"Berlin Day 2",items:["10am: Museum Island (Pergamon ~€14)","1pm: Markthalle Neun street food","3pm: Checkpoint Charlie + Topography of Terror (free)","5pm: Unter den Linden → Tiergarten","Evening: Prenzlauer Berg dinner"]},
+{day:"Day 6 · Jun 13",title:"Day Trip — Cologne or Rhine",items:["Option A: 🚄 Cologne (1.5h) — Dom cathedral, Kölsch beer","Option B: Rhine Valley scenic train, castle-hopping","Evening: Back in Berlin"]},
+{day:"Day 7 · Jun 14",title:"Berlin → Prague",items:["10am: Last Berlin sights","1pm: 🚄 Train Berlin → Prague (~4.5h, Eurail + ~€10 res)","5:30pm: Arrive Prague","7pm: ⭐ Charles Bridge at sunset 📸","🍽 Lokál Dlouhááá — Czech food (~€10)","9pm: Old Town Square at night"]}
+]},
+
+{id:1,city:"Prague",country:"🇨🇿",dates:"Jun 15 – 16",days:2,phase:"dad",emoji:"🏰",budget:0,tagline:"Charles Bridge at sunset & €1.50 beers",grad:"linear-gradient(135deg,#2c1810,#6b3a2a)",accent:"#6b3a2a",
+activities:["Prague Castle + St. Vitus Cathedral (~€15)","Charles Bridge at sunset","Old Town Square — Astronomical Clock","Petřín Hill — funicular + gardens","Lennon Wall","Jewish Quarter (Josefov)"],
+eats:["🍽 Lokál Dlouhááá (~€8-12)","🥪 Naše Maso sandwiches (~€6)","🍰 Café Savoy brunch (~€12)","🍺 Czech beer €1.50/pint!"],
+nightlife:["🍺 Old Town beer crawl","🎵 Cross Club — industrial multi-level bar"],
+transport:{from:"Berlin",method:"🚄 Train",time:"~4.5h",cost:"Eurail + ~€10",tip:"Book on CD.cz"},
+notes:"Last days with Dad!",weather:"☀️ 19–26°C",hostelRec:null,lat:50.08,lng:14.42,
+daily:[
+{day:"Day 8 · Jun 15",title:"Prague Day 1",items:["9am: Prague Castle complex — St. Vitus Cathedral, Golden Lane (~€15)","12pm: Walk down through Malá Strana","🍽 Café Savoy brunch (~€12)","2pm: Cross Charles Bridge — musicians, artists, views","3pm: Old Town Square — Astronomical Clock (on the hour)","4pm: Jewish Quarter (Josefov)","🍽 Kantýna — Czech beef cuts (~€12)","8pm: Beer crawl — €1.50/pint!"]},
+{day:"Day 9 · Jun 16",title:"Prague Day 2 → Brussels",items:["9am: Petřín Hill funicular + gardens","11am: Lennon Wall 📸, wander Malá Strana","🍽 Naše Maso sandwiches (~€6)","1pm: Last city walk","Evening: ✈️ Fly Prague → Brussels (Ryanair/Wizz ~€35, 1.5h)","9pm: Arrive Brussels, check into 2GO4 hostel","10pm: Grand Place lit up at night ⭐📸"]}
+]},
+
+{id:2,city:"Brussels",country:"🇧🇪",dates:"Jun 17",days:1,phase:"solo",emoji:"🧇",budget:95,tagline:"Waffles, frites & the most beautiful square in Europe",grad:"linear-gradient(135deg,#2d4a22,#4a6741)",accent:"#4a6741",
+activities:["Grand Place at night — jaw-dropping","Belgian waffle crawl — Liège-style","Manneken Pis","Comic strip murals walk","Atomium (€16)"],
+eats:["🍟 Maison Antoine — best frites (~€4)","🧇 Maison Dandoy since 1829 (~€6)","🍫 Pierre Marcolini chocolates","🍺 Delirium Café — 2,000+ beers"],
+nightlife:["🎵 Delirium Village","🌃 Place du Luxembourg"],
+transport:{from:"Prague",method:"✈️ Ryanair/Wizz",time:"~1.5h",cost:"~€30-50",tip:"Evening flight. Way faster than train."},
+budgetBreakdown:{hostel:38,food:32,transport:5,activities:20},
+weather:"☀️ 18–22°C",hostelRec:"🛏 2GO4 Grand Place (~€30)",lat:50.85,lng:4.35,
+daily:[
+{day:"Day 10 · Jun 17",title:"Brussels → Paris",items:["9am: Step outside — Grand Place. Jaw drops. 📸","9:30am: 🍽 Maison Dandoy waffle (~€6)","10:30am: Manneken Pis (tiny, 2 min)","11am: Comic strip murals walk","12:30pm: 🍽 Maison Antoine — best frites (~€4)","1:30pm: Atomium (€16)","4pm: Belgian chocolate shopping","🍽 Delirium Café area — mussels + frites (~€15)","9pm: 🚄 Eurostar → Paris (1h22, Eurail + €30 res)","10:30pm: Arrive Paris, check in Generator Hostel"]}
+]},
+
+{id:3,city:"Paris",country:"🇫🇷",dates:"Jun 18 – 21",days:4,phase:"solo",emoji:"🗼",budget:440,tagline:"City of Light — art, crêpes, Seine sunsets & midnight sparkles",grad:"linear-gradient(135deg,#1e3a5f,#3a6ea5)",accent:"#3a6ea5",
+activities:["Eiffel Tower sparkle at midnight from Pont des Arts ⭐","Louvre Museum","Montmartre → Sacré-Cœur views","Seine walk at night — lit bridges","Père Lachaise Cemetery","Luxembourg Gardens","Sainte-Chapelle stained glass (~€11)","Canal Saint-Martin"],
+eats:["🥐 Du Pain et des Idées — pistachio escargot (~€4)","🧀 Breizh Café — crêpes (~€11)","🥖 L'As du Fallafel Marais (~€8)","🍷 Pink Mamma 4-story Italian (~€15)","🥐 Latin Quarter crêpe stands (~€4)"],
+nightlife:["🎵 Le Marais bar-hopping","🌉 Pont des Arts at midnight + wine","🎶 La Station — underground electronic","🎵 Wanderlust — Seine outdoor club"],
+transport:{from:"Brussels",method:"🚄 Eurostar",time:"1h 22min",cost:"Eurail + ~€30 res",tip:"BOOK EARLY on b-europe.com!"},
+budgetBreakdown:{hostel:175,food:145,transport:30,activities:90},
+weather:"☀️ 20–26°C",hostelRec:"🛏 Generator Paris (~€35/night)",lat:48.86,lng:2.35,
+daily:[
+{day:"Day 11 · Jun 18",title:"Paris — Icons",items:["9am: Metro to Trocadéro → Eiffel Tower view ⭐📸","10:30am: Walk Seine toward Les Invalides","12pm: 🍽 Latin Quarter crêpe — Nutella banana (~€4)","1pm: Notre-Dame exterior","2pm: Sainte-Chapelle stained glass (~€11) ⭐","4:30pm: Luxembourg Gardens — sit by fountain","🍽 L'As du Fallafel Marais (~€8)","8pm: Eiffel Tower sparkle show (on the hour) ⭐","10pm: Pont des Arts — wine from Monoprix, sit on bridge"]},
+{day:"Day 12 · Jun 19",title:"Art + Montmartre",items:["9am: Louvre — Mona Lisa, Venus de Milo, Winged Victory","12:30pm: 🍽 Du Pain et des Idées pistachio escargot (~€4)","2pm: Metro to Montmartre","2:30pm: Walk up to Sacré-Cœur — all of Paris below 📸","3:30pm: Wander Montmartre — Place du Tertre artists","5pm: Père Lachaise Cemetery","🍽 Pink Mamma (~€15, book ahead!)","10pm: 🎵 Le Marais bar-hopping","1am: Home or keep going"]},
+{day:"Day 13 · Jun 20",title:"Seine + Nightlife",items:["💤 10am: Sleep in after Le Marais","11am: 🍽 Breizh Café galettes (~€11)","1pm: Musée d'Orsay (Monet, Van Gogh)","3pm: Saint-Germain-des-Prés walk","4:30pm: Canal Saint-Martin — trendy, sit by water","🍽 Baguette + cheese + fruit on Seine banks","8pm: Seine walk at golden hour → sunset 📸","11pm: 🎵 La Station or Wanderlust club"]},
+{day:"Day 14 · Jun 21",title:"Paris → San Sebastián",items:["💤 10am: Sleep in","11am: Last Paris walk — pain au chocolat","2pm: 🚄 TGV Paris Montparnasse → Hendaye (~5h, Eurail + €10)","7pm: Arrive Hendaye → Euskotren (37min, €2.90)","8:30pm: Check into A Room in the City","9:30pm: ⭐ Pintxos crawl — Bar Nestor, La Cuchara, Gandarias, La Viña cheesecake","11:30pm: 🎵 Parte Vieja bars — packed, follow the noise"]}
+]},
+
+{id:4,city:"San Sebastián",country:"🇪🇸",dates:"Jun 22 – 23",days:2,phase:"solo",emoji:"🏖️",budget:220,tagline:"Best food city in Spain — pintxos, surf & sunset mountains",grad:"linear-gradient(135deg,#0d3b66,#3a8fd4)",accent:"#3a8fd4",
+activities:["La Concha Beach — top 5 in the world","Pintxos crawl 5+ bars in Parte Vieja","Hike Monte Urgull 360° views (free)","Zurriola Beach surfing (~€15/2h)","Monte Igueldo funicular → sunset ⭐"],
+eats:["🍢 Bar Nestor — tortilla 1pm sharp","🦐 La Cuchara de San Telmo veal cheeks","🐙 Gandarias txuleta steak","🥖 La Viña — WORLD FAMOUS cheesecake (~€4)"],
+nightlife:["🍷 Parte Vieja bar crawl","🌅 Monte Igueldo BYOB sunset","🎵 Bataplan beachfront club"],
+transport:{from:"Paris",method:"🚄 TGV → Hendaye + Euskotren",time:"~5.5h",cost:"Eurail + €10 + €2.90",tip:"Euskotren not on Eurail (€2.90)."},
+budgetBreakdown:{hostel:75,food:80,transport:15,activities:50},
+weather:"⛅ 19–24°C",hostelRec:"🛏 A Room in the City (~€32/night)",lat:43.32,lng:-1.98,
+daily:[
+{day:"Day 15 · Jun 22",title:"San Seb Day 1 — Beach + Sunset",items:["💤 10am: Sleep in after pintxos crawl","11am: ⭐ La Concha Beach — swim, sunbathe 📸","1pm: 🍽 More pintxos in Parte Vieja for lunch","3pm: Hike Monte Urgull — 360° views (free, ~45min)","5pm: Zurriola Beach — surf or watch (~€15/2h)","7pm: 🍦 Oiartzun ice cream (~€2.50)","8pm: ⭐ Monte Igueldo funicular → sunset 📸 + BYOB wine","10:30pm: 🎵 Bataplan beachfront club"]},
+{day:"Day 16 · Jun 23",title:"San Seb → Porto (overnight)",items:["9am: Last swim La Concha","11am: Pack up","12pm: Bus/train to Bilbao (~1.5h)","2pm: Guggenheim exterior 📸","4pm: 🚌 FlixBus overnight Bilbao → Porto (~10h, ~€30)","Pack snacks, neck pillow, download shows","💤 Sleep on bus"]}
+]},
+
+{id:5,city:"Porto",country:"🇵🇹",dates:"Jun 24 – 25",days:2,phase:"solo",emoji:"🍷",budget:160,tagline:"Riverside tiles, bridges & the best sandwich ever",grad:"linear-gradient(135deg,#4a1942,#7a3070)",accent:"#7a3070",
+activities:["Dom Luís I Bridge top level at golden hour ⭐","Livraria Lello bookshop (€5→credit)","São Bento Station 20k azulejo tiles","Ribeira waterfront photos","Clérigos Tower 240 steps (~€8)"],
+eats:["🥪 Café Santiago — BEST Francesinha (~€12)","🐟 Cervejaria Brasão (~€14)","🍳 Café Majestic (~€8)","🧁 Nata Lisboa tarts (~€1.50)"],
+nightlife:["🍷 Gaia port wine tasting (~€10-15)","🎵 Galerias de Paris street bars","🌃 Mirajazz rooftop river views"],
+transport:{from:"San Sebastián",method:"🚌 FlixBus overnight",time:"~10h",cost:"$25–40",tip:"Saves a hostel night!"},
+budgetBreakdown:{hostel:45,food:55,transport:35,activities:25},
+weather:"☀️ 20–26°C",hostelRec:"🛏 Gallery Hostel (~€28/night)",lat:41.15,lng:-8.61,
+daily:[
+{day:"Day 17 · Jun 24",title:"Porto Day 1",items:["7am: Arrive from overnight bus. Drop bag.","8am: Coffee + pastel de nata","9:30am: ⭐ São Bento Station — 20,000 tiles 📸","10:30am: Clérigos Tower — 240 steps, 360° views (~€8)","12pm: Ribeira waterfront 📸","🍽 Nata Lisboa tarts (~€1.50)","2pm: ⭐ Dom Luís I Bridge TOP LEVEL 📸","3pm: Vila Nova de Gaia — port wine tasting (~€12)","🍽 Café Santiago — BEST Francesinha (~€12) ⭐","9pm: Galerias de Paris — street of bars","12am: 🎵 Bar hop til done"]},
+{day:"Day 18 · Jun 25",title:"Porto Day 2",items:["💤 10am: Sleep in","11am: Livraria Lello bookshop 📸","12:30pm: 🍽 Café Majestic art nouveau (~€8)","2pm: Rua de Santa Catarina, street art","4pm: Rooftop bar — river views","🍽 Cervejaria Brasão (~€14)","8pm: Sunset on Dom Luís Bridge","9pm: Pack — early train","11pm: Bed"]}
+]},
+
+{id:6,city:"Lisbon",country:"🇵🇹",dates:"Jun 26 – 27",days:2,phase:"solo",emoji:"🚋",budget:170,tagline:"Bairro Alto madness, fado alleys & the world's best custard tart",grad:"linear-gradient(135deg,#e07c24,#ffb347)",accent:"#e07c24",
+activities:["Alfama — fado from windows","Miradouro da Graça sunset (free)","Time Out Market food hall","LX Factory creative space","Belém Tower + Monastery","Tram 28"],
+eats:["🥧 Pastéis de Belém since 1837 (~€1.50) ⭐","🐙 Cervejaria Ramiro (~€18 splurge)","🥪 O Trevo bifana (~€3.50)","🍷 A Ginjinha shots (~€1.50)"],
+nightlife:["🎵 Bairro Alto — 250+ bars, streets fill up ⭐","🌃 Pink Street clubs"],
+transport:{from:"Porto",method:"🚄 Alfa Pendular",time:"2h 50min",cost:"FREE w/ Eurail",tip:"No reservation needed!"},
+budgetBreakdown:{hostel:58,food:62,transport:0,activities:50},
+weather:"☀️ 22–30°C",hostelRec:"🛏 Home Lisbon Hostel (~€28/night)",lat:38.72,lng:-9.14,
+daily:[
+{day:"Day 19 · Jun 26",title:"Lisbon Day 1 — Alfama + Nightlife",items:["8am: 🚄 Alfa Pendular Porto → Lisbon (2h50)","11am: Arrive. Check into hostel.","12pm: Walk Alfama — winding alleys, fado music","1pm: 🍽 O Trevo bifana (~€3.50)","2pm: ⭐ Miradouro da Graça 📸","3pm: Miradouro da Senhora do Monte","5pm: 🍽 A Ginjinha cherry liqueur (~€1.50)","6pm: LX Factory — shops + food","🍽 Time Out Market — 2-3 stalls (~€15)","10pm: ⭐🎵 Bairro Alto — streets fill with people, 250+ bars","Pink Street clubs after","3am: Stumble home"]},
+{day:"Day 20 · Jun 27",title:"Lisbon Day 2 — Belém",items:["💤 11am: Sleep in hard","12pm: 🍽 Pastel de nata + coffee","1pm: Tram 28 ride 📸","2pm: Belém — Tram 15E","2:30pm: ⭐ Pastéis de Belém — THE original (~€1.50)","3:30pm: Belém Tower + Monastery 📸","5pm: Back to center","🍽 Cervejaria Ramiro garlic shrimp (~€18 splurge)","8pm: Sunset from any miradouro","9pm: Pack, early-ish night"]}
+]},
+
+{id:7,city:"Algarve (Lagos)",country:"🇵🇹",dates:"Jun 28 – 29",days:2,phase:"solo",emoji:"🏖️",budget:150,tagline:"Sea caves at sunrise, cliff beaches & grilled fish",grad:"linear-gradient(135deg,#c9622f,#e8985a)",accent:"#c9622f",
+activities:["Ponta da Piedade kayak SUNRISE (~€25) ⭐⭐","Praia do Camilo cliff beach","Seven Hanging Valleys 6km hike (free)","Benagil Cave boat tour (~€25)","Coast bike ride"],
+eats:["🐟 Adega da Marina (~€12)","🦐 Casinha do Petisco cataplana (~€12)","🍦 Gelataria Bali (~€3)"],
+nightlife:["🍹 Lagos Old Town bars","🎵 Three Monkeys live music","🌅 Ponta da Piedade sunset + wine"],
+transport:{from:"Lisbon",method:"🚆 Regional train",time:"~3.5h",cost:"FREE w/ Eurail",tip:"~5x/day."},
+budgetBreakdown:{hostel:45,food:42,transport:0,activities:63},
+weather:"☀️ 25–32°C",hostelRec:"🛏 Bura Surfhouse (~€25/night)",lat:37.10,lng:-8.67,
+daily:[
+{day:"Day 21 · Jun 28",title:"Algarve Day 1 — Beaches",items:["8am: 🚄 Train Lisbon → Lagos (~3.5h)","11:30am: Arrive. Check into Bura Surfhouse.","12:30pm: 🍽 Quick lunch old town","2pm: ⭐ Praia do Camilo — wooden stairs to cliff beach 📸","4pm: Walk to Ponta da Piedade — cliff formations 📸","6pm: 🌅 Sunset at Ponta da Piedade + supermarket wine","🍽 Adega da Marina grilled fish (~€12)","9pm: Lagos Old Town bars","12am: 🎵 Three Monkeys if live music"]},
+{day:"Day 22 · Jun 29",title:"Algarve Day 2 — Kayak + Caves",items:["6:30am: ⭐⭐ Ponta da Piedade kayak SUNRISE (~€25) — BOOK AHEAD","9am: Back, shower, breakfast","10:30am: Benagil Cave boat tour (~€25) 📸","1pm: Back to Lagos","🍽 Casinha do Petisco cataplana (~€12)","3pm: Bike ride coast or Meia Praia beach","5pm: 🍦 Gelataria Bali (~€3)","7pm: Pack up","8pm: 🚌 Bus Lagos → Seville (via Faro, ~4-5h, ~€25)"]}
+]},
+
+{id:8,city:"Seville",country:"🇪🇸",dates:"Jun 30",days:1,phase:"solo",emoji:"💃",budget:100,tagline:"Flamenco, 40°C & the most beautiful plaza on earth",grad:"linear-gradient(135deg,#8b0000,#d4380d)",accent:"#d4380d",
+activities:["Real Alcázar GoT Dorne (€14.50 BOOK ONLINE)","Plaza de España — most beautiful plaza ever ⭐","Metropol Parasol sunset (€5)","Barrio Santa Cruz orange tree alleys","Free flamenco in Triana"],
+eats:["🍤 El Rinconcillo since 1670 (~€4)","🥘 Bar Eslava (~€4)","🍊 Fresh OJ stands (~€2)"],
+nightlife:["💃 Casa de la Memoria flamenco (~€22)","🎵 Alameda de Hércules","🍷 Calle Betis Triana bars"],
+transport:{from:"Lagos",method:"🚌 Bus via Faro",time:"~4–5h",cost:"$20–35",tip:"ALSA or FlixBus."},
+budgetBreakdown:{hostel:28,food:35,transport:22,activities:15},
+weather:"🔥 32–40°C · SIESTA 1-6pm",hostelRec:"🛏 Oasis — rooftop pool! (~€25)",lat:37.39,lng:-5.98,
+daily:[
+{day:"Day 23 · Jun 30",title:"Seville — Heat Strategy",items:["⚠️ 35-40°C. Do stuff early AM and after 7pm.","8am: Arrive. Check into Oasis (ROOFTOP POOL).","9am: ⭐ Real Alcázar — Moorish tilework (€14.50, book!) 📸","11:30am: Barrio Santa Cruz — orange tree alleys","12:30pm: 🍽 El Rinconcillo since 1670 (~€4)","1:30pm: ⭐ Plaza de España — rowboat on canal (~€6) 📸","3pm: SIESTA. Pool. Nap. It's 40°C.","6pm: Metropol Parasol sunset (€5) 📸","7:30pm: 🍽 Bar Eslava tapas (~€4)","9pm: Triana — walk across river","10pm: 💃 Free flamenco in Triana bars","11pm: Alameda de Hércules drinks","1am: Pack — early flight"]}
+]},
+
+{id:9,city:"Barcelona",country:"🇪🇸",dates:"Jul 1 – 2",days:2,phase:"solo",emoji:"🎭",budget:210,tagline:"Gaudí + Razzmatazz = best city nightlife in Europe",grad:"linear-gradient(135deg,#6b2737,#a84060)",accent:"#a84060",
+activities:["Sagrada Família (€26 BOOK ONLINE) ⭐","Park Güell mosaics (€10)","Gothic Quarter — get lost","Las Ramblas → Barceloneta Beach","Bunkers del Carmel — BEST view (free) ⭐"],
+eats:["🥘 Bar Cañete tapas (~€18)","🐙 La Boqueria Market (~€10)","🥖 Bo de B €5 bocadillo","🍦 Rocambolesc Michelin ice cream (~€4)"],
+nightlife:["🎵 Razzmatazz 5-room club ⭐⭐","🌃 Barceloneta chiringuitos","🍷 El Born cocktails"],
+transport:{from:"Seville",method:"✈️ Budget flight",time:"1.5h",cost:"$25–50",tip:"Ryanair carry-on."},
+budgetBreakdown:{hostel:65,food:65,transport:30,activities:50},
+weather:"☀️ 26–30°C",hostelRec:"🛏 Casa Gracia rooftop (~€30/night)",lat:41.39,lng:2.17,
+daily:[
+{day:"Day 24 · Jul 1",title:"Barcelona Day 1 — Gaudí + Club",items:["7am: ✈️ Seville → Barcelona (~1.5h)","10am: Drop bags Casa Gracia","11am: ⭐ Sagrada Família — 1.5h inside (€26, BOOK) 📸","1pm: 🍽 Bo de B €5 bocadillo","2:30pm: Gothic Quarter — get lost in medieval lanes","4pm: Walk Las Ramblas → Barceloneta Beach","6pm: 🍽 La Boqueria juice + jamón (~€10)","8pm: ⭐ Bunkers del Carmel — BEST view of Barcelona 📸 + wine + snacks","10:30pm: El Born cocktail bars pre-game","12am: 🎵⭐ Razzmatazz — 5 rooms, best club in Barcelona","4am: Home"]},
+{day:"Day 25 · Jul 2",title:"Barcelona Day 2 → Cinque Terre",items:["💤 11am: Sleep in after Razzmatazz","12pm: 🍽 Brunch in El Born","1:30pm: Park Güell mosaics (€10) 📸","3:30pm: Gràcia neighborhood — cute squares","5pm: 🍽 Bar Cañete tapas (~€18)","7pm: Last Barceloneta beach swim","8pm: Pack","9pm: 🚄 Train to Cinque Terre"]}
+]},
+
+{id:10,city:"Cinque Terre",country:"🇮🇹",dates:"Jul 3 – 4",days:2,phase:"solo",emoji:"🌊",budget:170,tagline:"Five colorful cliff villages — hike, swim, sunset, repeat",grad:"linear-gradient(135deg,#d4380d,#ff7043)",accent:"#ff7043",
+activities:["Hike Riomaggiore → Manarola → Corniglia","Sunset from Vernazza harbor ⭐⭐","Hike Monterosso → Vernazza (~2h) ⭐","Swim in Vernazza harbor","Manarola iconic photo spot"],
+eats:["🍝 Seafood pesto pasta (~€11)","🫓 Focaccia everywhere","🍦 Gelato in every village","🍷 Local white wine"],
+nightlife:["🌅 Vernazza harbor sunset wine","🍷 Riomaggiore wine bars","(beauty destination, not party)"],
+transport:{from:"Barcelona",method:"🚄 Train via Genova",time:"~4–5h",cost:"Eurail",tip:"Cinque Terre pass €16/day for village trains."},
+budgetBreakdown:{hostel:60,food:50,transport:16,activities:44},
+weather:"☀️ 26–30°C",hostelRec:"🛏 Hostel in Riomaggiore (~€30)",lat:44.10,lng:9.73,
+daily:[
+{day:"Day 26 · Jul 3",title:"Cinque Terre Day 1 — Hike + Sunset",items:["7am: 🚄 Barcelona → Genova → La Spezia (~6h, Eurail)","1pm: Arrive La Spezia. Buy CT pass (€16/day).","1:30pm: Train to Riomaggiore (5min). Drop bag.","🍽 Lunch — seafood pesto (~€11)","2:30pm: ⭐ Hike Riomaggiore→Manarola→Corniglia (~2.5h) 📸","Stop in Manarola for iconic photo","5pm: Gelato in Corniglia","5:30pm: Train to Vernazza — most beautiful village 📸","7:30pm: ⭐⭐ Sunset from Vernazza harbor 📸","🍽 Ristorante Belforte terrace (~€15)","9pm: Train back to Riomaggiore"]},
+{day:"Day 27 · Jul 4",title:"Cinque Terre Day 2 → Dolomites",items:["7:30am: Train to Monterosso — best beach","8am: ⭐ Hike Monterosso→Vernazza (~2h) — most famous trail 📸","10:30am: Swim in Vernazza harbor","12pm: 🍽 Focaccia on the rocks","1pm: Train to La Spezia, grab bags","2pm: 🚄 La Spezia → Verona (~3h, Eurail)","5pm: Arrive Verona","6pm: 🚌 FlixBus Verona → Cortina d'Ampezzo (~4h, ~€10)","10pm: Arrive Cortina. Check into hostel. Sleep."]}
+]},
+
+{id:11,city:"Lago di Sorapis",country:"🇮🇹",dates:"Jul 5",days:1,phase:"solo",emoji:"🏔️",budget:80,tagline:"Turquoise alpine lake hidden in the Dolomites",grad:"linear-gradient(135deg,#1d4e89,#48cae4)",accent:"#48cae4",
+activities:["⭐⭐ Hike Trail 215 to Lago di Sorapis","Cable-aided rock traverses","Rifugio Vandelli for espresso","Alpine scenery unlike anything else"],
+eats:["☕ Rifugio Vandelli — espresso + strudel (~€8)","🍝 Dinner in Cortina before leaving (~€12)"],
+nightlife:["(Not a nightlife stop — pure nature)"],
+transport:{from:"Cinque Terre",method:"🚄+🚌 via Verona",time:"Train 3h + bus 4h",cost:"Eurail + ~€10 FlixBus",tip:"Bus 30 Cortina→Passo Tre Croci (8:36am, 15min, ~€2)."},
+budgetBreakdown:{hostel:35,food:20,transport:15,activities:10},
+weather:"☀️ 15–22°C · Alpine! Bring layers.",hostelRec:"🛏 Hotel in Cortina (~€35/night)",lat:46.49,lng:12.18,
+daily:[
+{day:"Day 28 · Jul 5",title:"⭐ Lago di Sorapis + Travel to Como",items:["7am: Wake up in Cortina. Layers on, water bottle full.","8:30am: Dolomiti Bus 30 → Passo Tre Croci (15min, ~€2)","8:45am: ⭐⭐ Start Trail 215 to Lago di Sorapis","Through forest → scree → cable-aided sections","10:30am: Arrive at the lake. Jaw drops. 📸","Turquoise water, Dito di Dio spire, total silence.","☕ Rifugio Vandelli espresso + strudel","11:30am: Hike back (same trail, ~1.5h)","1pm: Back at Passo Tre Croci. Bus to Cortina.","1:30pm: Quick lunch in Cortina (~€12)","2:30pm: 🚌 FlixBus Cortina → Verona (~4h, ~€10)","6:30pm: 🚄 Train Verona → Milan → Varenna (~2.5h, Eurail)","9pm: Arrive Varenna, Lake Como ⭐","Walk to hostel — the lake hits you immediately","🍽 Light dinner. Breathe. You earned this."]}
+]},
+
+{id:12,city:"Lake Como + Portofino",country:"🇮🇹",dates:"Jul 6 – 7",days:2,phase:"solo",emoji:"⛵",budget:200,tagline:"Alpine lake, Bellagio & Paraggi Beach — top-3 day of the trip",grad:"linear-gradient(135deg,#1d4e89,#5fa8d3)",accent:"#1d4e89",
+activities:["Ferry Varenna → Bellagio → Menaggio","Villa Carlotta gardens (€12)","Swim in Lake Como","Gelato crawl Bellagio","⭐ Portofino + Paraggi Beach day trip ⭐⭐⭐"],
+eats:["🍝 Nilus Bar lake-view pasta (~€12)","🐟 Crotto dei Platani grotto","🍦 Gelateria del Borgo pistachio (~€3)"],
+nightlife:["🌅 Lake sunset drinks","🍷 Enoteca Cava Turacciolo"],
+transport:{from:"Cinque Terre",method:"🚄 via Milan",time:"~3.5h",cost:"Eurail",tip:"Stay in Varenna."},
+budgetBreakdown:{hostel:75,food:55,transport:15,activities:55},
+weather:"☀️ 24–30°C",hostelRec:"🛏 Ostello del Borgo Varenna (~€35)",lat:46.01,lng:9.26,
+dayTrip:{name:"⭐ Portofino + Paraggi Beach",desc:"Italian Riviera crown jewel. Train → Santa Margherita → ferry → Portofino → Paraggi.",
+activities:["7am — Train Varenna → Milan (1h)","9:15am — Train Milan → Santa Margherita (2h)","11am — Ferry to Portofino (€7) — arrive by sea ⭐","11:30am — Piazzetta harbor photos (don't eat, €25+ pasta)","12pm — Castello Brown views (€5)","1pm — Walk to PARAGGI BEACH ⭐⭐⭐","1-4pm — Float in crystal turquoise. Top-3 moment.","4:30pm — Coast walk to Santa Margherita (30min)","6:30pm — Train back, arrive ~9pm"],
+cost:"~€30-45. Trains FREE Eurail.",tip:"Go EARLY. Packed by 1pm. Bring lunch."},
+daily:[
+{day:"Day 29 · Jul 6",title:"Lake Como — Ferries + Swimming",items:["9am: ⭐ Ferry Varenna→Bellagio (~15min, ~€5) 📸","9:30am: Wander Bellagio cobblestones, shops","10:30am: Villa Carlotta gardens (€12)","12:30pm: 🍦 Gelateria del Borgo pistachio (~€3)","1pm: Ferry Bellagio→Menaggio (~€5)","2pm: Walk Menaggio, swim in lake (clear, cold!)","3:30pm: Ferry back to Varenna","4:30pm: Swim off rocks in Varenna","6pm: Greenway del Lago walk","🍽 Crotto dei Platani grotto restaurant","9pm: 🍷 Drinks lakeside"]},
+{day:"Day 30 · Jul 7",title:"⭐ PORTOFINO + PARAGGI DAY TRIP",items:["⚠️ Top-3 day of entire trip. Execute early.","7am: 🚄 Train Varenna→Milan (1h, Eurail)","8:15am: 🚄 Train Milan→Santa Margherita (2h)","10:30am: Walk to ferry dock","11am: ⭐ Ferry to Portofino (€7, 15min) — magic arrival 📸","11:30am: Piazzetta harbor photos. DON'T eat (€25+ pasta)","12pm: Castello Brown panoramic views (€5)","1pm: ⭐⭐⭐ PARAGGI BEACH (10 min walk)","Insanely clear turquoise cove. Free public side.","1-4pm: Float, snorkel, be alive. Top-3 moment. 📸","4pm: Coastal path to Santa Margherita (30min)","4:30pm: Gelato + espresso","5:30pm: 🚄 Train back Milan→Varenna (~3h)","9pm: Light dinner. Pack for Rome."]}
+]},
+
+{id:13,city:"Rome",country:"🇮🇹",dates:"Jul 8 – 9",days:2,phase:"solo",emoji:"🏛️",budget:220,tagline:"Colosseum at dawn, cacio e pepe at dusk, Trastevere all night",grad:"linear-gradient(135deg,#5c2018,#a04030)",accent:"#a04030",
+activities:["Colosseum + Forum (€18 BOOK ONLINE) ⭐","Trevi Fountain at 5:30am — alone ⭐","Vatican + Sistine Chapel (€17)","Trastevere at night ⭐","Pantheon (free)","St. Peter's dome (~€8)"],
+eats:["🍕 Da Remo thin Roman (~€7)","🍝 Tonnarello cacio e pepe (~€10) ⭐","🧆 Supplizio supplì (~€4)","🍦 Fatamorgana best gelato (~€3)","☕ Sant'Eustachio espresso (~€2)"],
+nightlife:["🎵 Trastevere — follow the noise","🍺 San Lorenzo cheapest drinks","🌃 Pincio Terrace sunset"],
+transport:{from:"Lake Como",method:"🚄 Frecciarossa via Milan",time:"~5h",cost:"Eurail + €13",tip:"trenitalia.com"},
+budgetBreakdown:{hostel:65,food:62,transport:13,activities:80},
+weather:"🔥 28–34°C",hostelRec:"🛏 The Yellow rooftop bar (~€30)",lat:41.90,lng:12.50,
+daily:[
+{day:"Day 31 · Jul 8",title:"Rome — Ancient City",items:["8am: 🚄 Frecciarossa via Milan → Rome (~5h, Eurail+€13)","1pm: Arrive Roma Termini. The Yellow hostel.","1:30pm: 🍽 Supplizio supplì to-go (~€4)","2:30pm: ⭐ Colosseum+Forum+Palatine (€18, BOOK) 📸","5:30pm: Trevi Fountain (crowded now — come back at 5:30am)","6pm: Spanish Steps → Via del Corso","7pm: Cross Tiber to Trastevere","🍽 ⭐ Tonnarello cacio e pepe (~€10)","9pm: Trastevere at night — cobblestones, buskers, bars ⭐","11pm: San Lorenzo for cheap drinks"]},
+{day:"Day 32 · Jul 9",title:"Rome — Vatican + Farewell",items:["⭐ 5:30am: Trevi Fountain ALONE at sunrise 📸","6am: Back to bed 2 more hours","9am: ⭐ Vatican Museums + Sistine Chapel (€17, timed entry)","12pm: St. Peter's Basilica (free) — dome climb (~€8)","1:30pm: 🍽 Da Remo thin Roman pizza (~€7, cash only)","3pm: Pantheon (free) — oculus 📸","4pm: Piazza Navona","5pm: ☕ Sant'Eustachio espresso (~€2)","6pm: 🍦 Fatamorgana gelato (~€3)","7pm: 🌃 Pincio Terrace sunset 📸","🍽 Pizza al taglio (€2-3)","9pm: Early-ish night"]}
+]},
+
+{id:14,city:"Naples + Amalfi",country:"🇮🇹",dates:"Jul 10 – 12",days:3,phase:"solo",emoji:"🍕",budget:270,tagline:"€5 pizza, Pompeii, Path of the Gods & Positano",grad:"linear-gradient(135deg,#3d405b,#6d6f94)",accent:"#6d6f94",
+activities:["da Michele pizza (~€5) ⭐","Pompeii (€16) ⭐","SITA bus Amalfi Coast (sit RIGHT)","Positano — swim + lemon granita","Path of the Gods 3h hike ⭐⭐","Napoli Sotterranea (~€12)"],
+eats:["🍕 da Michele margherita (~€5)","🍕 Sorbillo (~€6)","🍋 Positano lemon granita (~€3)","🐟 Nennella — they throw bread (~€10)","🧁 Sfogliatella Attanasio (~€2)"],
+nightlife:["🍺 Via dei Tribunali","🎵 Kestè rooftop Vesuvius","🍷 Amalfi terrace limoncello"],
+transport:{from:"Rome",method:"🚄 Frecciarossa + SITA",time:"1h10 + 1.5h",cost:"Eurail + €13 + €2.50",tip:"BASE IN NAPLES."},
+budgetBreakdown:{hostel:78,food:72,transport:40,activities:80},
+weather:"🔥 30–36°C",hostelRec:"🛏 Hostel of the Sun (~€25)",lat:40.85,lng:14.27,
+daily:[
+{day:"Day 33 · Jul 10",title:"Naples — Pizza Pilgrimage",items:["9am: 🚄 Frecciarossa Rome→Naples (1h10, Eurail+€13)","10:30am: Hostel of the Sun. Drop bags.","11am: ⭐ da Michele — margherita or marinara (~€5) 📸","12:30pm: Walk Via dei Tribunali — pizza fritta (~€3), sfogliatella (~€2)","2pm: Napoli Sotterranea tunnels (~€12)","4pm: Waterfront — Castel dell'Ovo, Vesuvius views","5:30pm: 🍽 Sorbillo — second pizza legend (~€6)","7pm: Walk Spaccanapoli","🍽 Nennella — they throw bread (~€10)","9pm: Via dei Tribunali bars","11pm: 🎵 Kestè rooftop Vesuvius DJ"]},
+{day:"Day 34 · Jul 11",title:"Pompeii + Amalfi Coast",items:["7:30am: Circumvesuviana→Pompeii Scavi (€4, 35min)","8:15am: ⭐ Pompeii (€16) — Forum, House of the Faun, casts 📸","11:30am: Train back to Sorrento","1pm: 🚌 SITA bus Amalfi Coast (€2.50, SIT RIGHT) 📸","2:30pm: Arrive Positano","3pm: ⭐ Walk 1,000 steps to beach, swim 📸","🍋 Lemon granita (~€3)","5:30pm: Bus to Amalfi town — piazza + cathedral","🍽 Seafood on Amalfi waterfront (~€14)","7:30pm: Bus→Sorrento→Naples","10pm: Limoncello on hostel rooftop"]},
+{day:"Day 35 · Jul 12",title:"Path of the Gods ⭐",items:["7am: Circumvesuviana→Sorrento→bus to Bomerano","9am: ⭐⭐ PATH OF THE GODS (3h) — above Amalfi Coast 📸","One of the most beautiful hikes in Europe.","Views down to Positano the entire way.","12pm: Arrive Nocelle. Bus to Positano.","1pm: 🍽 Lunch in Positano — lemon everything","3pm: Beach time","5pm: Bus→Sorrento→Naples","🍽 Last Naples pizza","8pm: Pack. Big travel day tomorrow."]}
+]},
+
+{id:15,city:"Athens → Crete",country:"🇬🇷",dates:"Jul 14 – 21",days:8,phase:"mom",emoji:"🏛️",budget:0,tagline:"Week with Mom — Balos lagoon, pink sand & Greek food heaven",grad:"linear-gradient(135deg,#0077b6,#48cae4)",accent:"#0077b6",
+activities:["Acropolis & Parthenon ⭐","Balos Beach lagoon ⭐⭐","Elafonissi pink sand beach ⭐","Palace of Knossos (~€15)","Chania Old Town harbor","Samaria Gorge 16km (~€5)","Seitan Limania hidden cove","Wine tasting Heraklion","Rethymno evening stroll","Spinalonga Island (~€25)"],
+eats:["🐙 Thalassino Ageri Chania (~€18)","🧀 Dakos salad (~€6)","🥘 Bougatsa Iordanis (~€3)","🍖 Grilled lamb (~€12)","🍯 Cretan honey + yogurt","🥗 Free raki with meze!"],
+nightlife:["🎵 Chania harbor bars","🍷 Rethymno wine bars","🌅 Falassarna sunset"],
+transport:{from:"Naples/Rome",method:"✈️ Flight",time:"~2.5h",cost:"$50–100",tip:"Ryanair/Wizz/Aegean."},
+notes:"Budget = $0 — Mom's trip 🙏",weather:"☀️ 28–35°C",hostelRec:null,lat:35.51,lng:24.02,
+daily:[
+{day:"Day 36 · Jul 13",title:"Travel — Naples → Athens",items:["8am: ✈️ Flight Naples→Athens (~2.5h)","12pm: Arrive. Meet Mom!","Afternoon: Walk Plaka together","🍽 Souvlaki at Kostas (~€3)","Evening: Acropolis lit up from Areopagus Hill"]},
+{day:"Days 37-43 · Jul 14-20",title:"Crete with Mom (flexible)",items:["Base: Chania (most charming town)","⭐ Balos Beach lagoon (boat ~€25 RT)","⭐ Elafonissi pink sand beach","Palace of Knossos (~€15)","Chania Old Town harbor sunset walks","Samaria Gorge 16km (if Mom's up for it)","Seitan Limania hidden cove","Wine tasting Heraklion (~€20)","Rethymno Old Town evening stroll","Spinalonga Island (~€25)","🍽 Thalassino Ageri, bougatsa, dakos, lamb, honey+yogurt"]},
+{day:"Day 44 · Jul 21",title:"Leave Crete",items:["Morning: Last moments with Mom","Afternoon: ✈️ Crete→Athens (45min, ~€40)","Say goodbye to Mom 🫂","6pm: Check into City Circus hostel","🍽 Souvlaki + koulouri","9pm: 🎵 Psyrri bars→clubs"]}
+]},
+
+{id:16,city:"Athens",country:"🇬🇷",dates:"Jul 22",days:1,phase:"solo",emoji:"🏺",budget:80,tagline:"Solo day — souvlaki, rooftop cocktails & street art",grad:"linear-gradient(135deg,#023e8a,#0077b6)",accent:"#0077b6",
+activities:["Monastiraki Flea Market","Exarchia street art tour","Lycabettus Hill sunset (free)","Anafiotika houses"],
+eats:["🥙 Kostas souvlaki (~€3) ⭐","🐙 Thanasis kebabs (~€8)","🍯 Koulouri (~€0.50)","🥗 Karamanlidika meze (~€10)"],
+nightlife:["🍸 A for Athens rooftop Acropolis ⭐","🎵 Exarchia cheapest bars","🌃 Psyrri — bars → clubs"],
+transport:{from:"Crete",method:"✈️ Flight",time:"45min",cost:"$30–60",tip:"Or ferry ~€35."},
+budgetBreakdown:{hostel:22,food:28,transport:0,activities:30},
+weather:"🔥 32–38°C",hostelRec:"🛏 City Circus (~€22)",lat:37.97,lng:23.73,
+daily:[
+{day:"Day 45 · Jul 22",title:"Athens Solo Day → Albania",items:["💤 10am: Sleep in after Psyrri","11am: Monastiraki flea market — records, vintage","12pm: 🍽 Kostas souvlaki one more time (~€3)","1pm: Exarchia street art walk","3pm: Lycabettus Hill sunset hike 📸","5pm: 🍽 Karamanlidika meze (~€10)","7pm: 🍸 A for Athens rooftop Acropolis views 📸","9pm: 🎵 Exarchia cheapest bars","11pm: Pack for early bus"]}
+]},
+
+{id:17,city:"Albania",country:"🇦🇱",dates:"Jul 23 – 25",days:3,phase:"solo",emoji:"🏔️",budget:120,tagline:"€3 cocktails, Blue Eye spring & Maldives-level beaches",grad:"linear-gradient(135deg,#4a0e0e,#8b2020)",accent:"#8b2020",
+activities:["Ksamil beaches — Albanian Maldives (free)","Blue Eye spring — otherworldly (~€2) ⭐","Berat City of 1000 Windows UNESCO","Gjirokastër castle","Butrint ruins (~€8)"],
+eats:["🥘 Full meals €3–5!","🐟 Ksamil beachside fish (~€6)","🫓 Byrek pastry (~€0.50!)","☕ Espresso (~€0.50)"],
+nightlife:["🏖️ Ksamil beach bars €3 cocktails","🍷 Saranda waterfront","🌃 Berat castle at night"],
+transport:{from:"Athens",method:"🚌 Bus",time:"~8h",cost:"$25–40",tip:"No railways. GjirafaTravel."},
+budgetBreakdown:{hostel:36,food:32,transport:35,activities:17},
+weather:"☀️ 30–36°C",hostelRec:"🛏 Saranda Backpackers (~€12 🤯)",lat:39.87,lng:20.00,
+daily:[
+{day:"Day 46 · Jul 23",title:"Travel to Albania",items:["7am: 🚌 Bus Athens→Saranda (~8h, ~$30)","Download shows/podcasts for the ride","3pm: Arrive Saranda. Check in (~€12/night!).","4pm: Waterfront promenade walk","5pm: Swim at Saranda beach","🍽 Full meal for €5. Not a drill.","8pm: Waterfront bars — cocktails €3","10pm: Chill night"]},
+{day:"Day 47 · Jul 24",title:"Ksamil + Blue Eye",items:["9am: 🚌 Bus to Ksamil (~30min, ~€1)","9:30am: ⭐ Ksamil beaches — Albanian Maldives 📸","Swim, snorkel, island-hop (~€5 boat)","12pm: 🍽 Beachside grilled fish (~€6)","2pm: Taxi/bus to Blue Eye Spring (~30min)","3pm: ⭐ Blue Eye — surreal turquoise pool (~€2) 📸","5pm: Back to Ksamil or Saranda","7pm: Beach bar sunset — €3 cocktails, music","🍽 Byrek pastry (~€0.50!)"]},
+{day:"Day 48 · Jul 25",title:"Albania → Kotor",items:["Option: AM trip to Butrint ruins (~€8)","10am: 🚌 Bus Saranda→Kotor (~6-8h, ~$20)","Long travel day — podcasts, book, nap","6pm: Arrive Kotor. Old Town Hostel.","7pm: First walk through medieval Old Town","🍽 Konoba Scala Santa (~€12)","9pm: Maximus bar — sunset cocktails"]}
+]},
+
+{id:18,city:"Kotor",country:"🇲🇪",dates:"Jul 26 – 27",days:2,phase:"solo",emoji:"🏰",budget:120,tagline:"1,350 sunrise steps, medieval walls & moonlit bay",grad:"linear-gradient(135deg,#2c3e50,#4a6fa5)",accent:"#4a6fa5",
+activities:["Fortress 1,350 steps at sunrise ⭐⭐","Old Town — cats, churches, gelato","Bay boat trip Our Lady of the Rocks (~€15)","Perast — Baroque painting village","Swim off the rocks"],
+eats:["🐟 Konoba Scala Santa (~€12)","🍕 Pronto Pizza (~€5)","🐙 Galion bay views (~€18)","🍦 Old Town gelato (~€2)"],
+nightlife:["🍹 Maximus sunset cocktails","🎵 Old Town bars live music","🌙 Fortress at night — free moonlit bay"],
+transport:{from:"Albania",method:"🚌 Bus",time:"~6–8h",cost:"$15–25",tip:"Saranda → Podgorica → Kotor."},
+budgetBreakdown:{hostel:42,food:38,transport:18,activities:22},
+weather:"☀️ 28–34°C",hostelRec:"🛏 Old Town Hostel (~€20)",lat:42.42,lng:18.77,
+daily:[
+{day:"Day 49 · Jul 26",title:"Kotor — Fortress + Bay",items:["⚠️ Climb fortress EARLY before heat.","7am: ⭐⭐ Climb 1,350 steps — free before ticket booth 📸","Views over Bay of Kotor are INSANE","9am: Back down, breakfast","10:30am: Explore Old Town — churches, cats, gelato","12pm: 🍽 Pronto Pizza (~€5)","1pm: ⭐ Bay boat trip — Our Lady of the Rocks + Perast (~€15) 📸","4pm: Swim off the rocks — blue water","6pm: 🍽 Galion bay views (~€18 splurge)","8pm: Fortress walls at night (free) — moonlit bay 📸","10pm: Old Town bars"]},
+{day:"Day 50 · Jul 27",title:"Kotor → Dubrovnik",items:["9am: Morning bay swim","11am: Pack up","12pm: 🚌 Bus Kotor→Dubrovnik (~2h, ~$12)","Passport ready at border","2pm: Arrive Dubrovnik. Hostel Angelina.","3pm: Walk through Pile Gate — jaw drops","4pm: 🍽 Quick lunch inside walls","5pm: ⭐ Dubrovnik city walls — 2km above Adriatic (€35) 📸","7pm: 🍺 Buža Bar — cliff bar outside walls ⭐📸","🍽 Dinner outside walls (cheaper)","10pm: Old Town bars"]}
+]},
+
+{id:19,city:"Croatia + Mostar",country:"🇭🇷🇧🇦",dates:"Jul 28 – 31",days:4,phase:"solo",emoji:"🌊",budget:360,tagline:"Dubrovnik walls, Hvar party & a club on its own island",grad:"linear-gradient(135deg,#003049,#0077b6)",accent:"#0077b6",
+activities:["Dubrovnik walls 2km (€35) ⭐","Kayak Dubrovnik sunset (~€30)","🇧🇦 Mostar — Stari Most bridge","Diocletian's Palace Split","Hvar — Hula Hula → Carpe Diem ⭐⭐","Lokrum Island"],
+eats:["🐟 Konoba Marjan Split (~€14)","🍕 Bokeria Split (~€10)","🥘 Taj Mahal Mostar ćevapi (~€6)","🍺 Buža Bar cliff drinks (~€8)","🍦 Luka Ice Cream Split (~€3)"],
+nightlife:["🎵 Hula Hula Hvar sunset party ⭐⭐","🍸 Carpe Diem island club ⭐⭐","🌃 Diocletian's Palace bars","🍺 Buža Bar Dubrovnik cliffs"],
+transport:{from:"Kotor",method:"🚌 Bus",time:"~2h to Dubrovnik",cost:"$10–15",tip:"Passport at borders."},
+budgetBreakdown:{hostel:112,food:95,transport:55,activities:98},
+weather:"☀️ 28–34°C",hostelRec:"🛏 Angelina Dubrovnik + Emanuel Split",lat:42.65,lng:18.09,
+daily:[
+{day:"Day 51 · Jul 28",title:"Dubrovnik Day 2 — Kayak + Lokrum",items:["10am: ⛴ Lokrum Island ferry (~€15 RT, 10min)","Botanical garden, peacocks, Dead Sea lake, GoT throne","1pm: Back. 🍽 Lunch outside walls","3pm: Swim at Banje Beach","5pm: ⭐ Sunset kayak around Dubrovnik (~€30) 📸","8pm: 🍽 Banje Beach Bar — ONE drink for view (~€8)","10pm: Old Town bars"]},
+{day:"Day 52 · Jul 29",title:"🇧🇦 Mostar Day Trip",items:["7:30am: 🚌 Bus Dubrovnik→Mostar (~3h, ~€15)","10:30am: ⭐ Stari Most bridge 📸","Watch locals dive 30m!","12pm: Ottoman bazaar — copper, Turkish coffee","🍽 ⭐ Taj Mahal — ćevapi & burek (~€6)","2pm: Walk both sides — bullet holes are sobering","3pm: Riverside Turkish coffee","4pm: 🚌 Bus back (~3h)","7pm: Back in Dubrovnik. 🍽 Light dinner.","9pm: Pack for Split"]},
+{day:"Day 53 · Jul 30",title:"Split — Diocletian's Palace",items:["8am: 🚌 Bus Dubrovnik→Split (~4.5h, ~€18)","12:30pm: Emanuel hostel. 🍽 Bokeria (~€10)","2:30pm: ⭐ Diocletian's Palace — LIVING Roman ruin 📸","4pm: Walk the Riva waterfront","5pm: Climb Marjan Hill panoramic views 📸","🍽 Konoba Marjan — sea views (~€14)","9pm: 🎵 Diocletian's Palace bars — drink in a 1,700-yr-old ruin","11pm: Riva waterfront bars"]},
+{day:"Day 54 · Jul 31",title:"⭐ Hvar Island",items:["7am: ⛴ Ferry Split→Hvar (~1.5h, ~€12)","9am: Arrive Hvar — lavender, stone streets","10am: Rent scooter (~€25) — secret beaches, villages","12pm: 🍽 Beach restaurant lunch","2pm: Swim at hidden cove","5pm: Back to Hvar Town","7pm: ⭐⭐ Hula Hula — sunset party on rocks 📸","DJs, cocktails, dancing as sun sets into Adriatic","9pm: 🍽 Dinner Hvar Town","11pm: ⭐⭐🎵 Carpe Diem Beach — boat taxi to ISLAND CLUB (€25)","3am: Boat back. Stay in Hvar overnight."]}
+]},
+
+{id:20,city:"Slovenia",country:"🇸🇮",dates:"Aug 1 – 2",days:2,phase:"solo",emoji:"🏔️",budget:155,tagline:"Lake Bled — most fairy-tale scene in Europe",grad:"linear-gradient(135deg,#2d6a4f,#52b788)",accent:"#52b788",
+activities:["Row to Bled island — wishing bell (~€15) ⭐","Kremšnita cream cake (~€5)","Vintgar Gorge boardwalk (€10) ⭐","Ljubljana Dragon Bridge","Ljubljana Castle funicular (~€13)","Metelkova squatter-art zone","Swim in Lake Bled"],
+eats:["🥟 Olimpija Burek (~€3)","🍰 Park Hotel kremšnita (~€5)","🍺 Open Kitchen street food (~€8)","🥩 Gostilna Pri Planincu (~€10)"],
+nightlife:["🎵 Metelkova autonomous art zone ⭐","🍻 Ljubljana riverfront bars","🌃 Lake Bled + stars"],
+transport:{from:"Split",method:"🚌 FlixBus",time:"~7h",cost:"$25–45",tip:"Bus Ljub→Bled 1h20 €7."},
+budgetBreakdown:{hostel:50,food:45,transport:28,activities:32},
+weather:"☀️ 22–28°C · Cooler!",hostelRec:"🛏 Hostel Tresor bank vault (~€22)",lat:46.37,lng:14.11,
+daily:[
+{day:"Day 55 · Aug 1",title:"Travel + Lake Bled",items:["7am: Ferry Hvar→Split (early)","9am: 🚌 FlixBus Split→Ljubljana (~7h, ~$35)","4pm: Arrive Ljubljana. Hostel Tresor.","5pm: 🚌 Bus to Bled (1h20, €7)","6:30pm: ⭐ First view of Lake Bled + island church 📸","7:30pm: 🍰 Park Hotel kremšnita on lake terrace (~€5)","8pm: Walk around the lake at sunset","9pm: Bus back to Ljubljana (or B&B in Bled)"]},
+{day:"Day 56 · Aug 2",title:"Bled + Ljubljana",items:["8am: Bus to Bled","9am: ⭐ Row to island — ring wishing bell (~€15) 📸","10:30am: ⭐ Vintgar Gorge boardwalk (€10) 📸","12:30pm: Swim in Lake Bled from grassy banks","🍽 Lunch near lake","2pm: Back to Ljubljana","3:30pm: Dragon Bridge + Triple Bridge 📸","4pm: Castle funicular (~€13)","5:30pm: Riverfront walk — café-lined 📸","🍽 Burek (~€3) or Gostilna (~€10)","8pm: 🎵 Metelkova — squatter art zone, bars ⭐","11pm: Ljubljana riverfront bars"]}
+]},
+
+{id:21,city:"Budapest",country:"🇭🇺",dates:"Aug 3 – 5",days:3,phase:"solo",emoji:"♨️",budget:210,tagline:"Thermal baths → ruin bars → lángos → repeat",grad:"linear-gradient(135deg,#6a040f,#a4133c)",accent:"#a4133c",
+activities:["Széchenyi Baths (~€24) ⭐","Szimpla Kert ruin bar ⭐⭐","Chain Bridge → Buda Castle night","Fisherman's Bastion (free at night)","Parliament tour (~€8)","Gellért Hill viewpoint (free)","Central Market — lángos upstairs"],
+eats:["🧅 Lángos Central Market (~€3) ⭐","🍲 Bors GasztroBar soups (~€6)","🥩 Karavan Street Food (~€6)","🍰 New York Café (~€10)","🥘 Frici Papa goulash (~€6)"],
+nightlife:["🍺 Szimpla Kert ⭐⭐","🎵 Instant-Fogas dance floors","🛥 Pontoon floating Danube club","🍸 360 Bar rooftop (~€8)"],
+transport:{from:"Ljubljana",method:"🚄 Train",time:"~8h",cost:"FREE Eurail",tip:"Via Zagreb."},
+budgetBreakdown:{hostel:54,food:56,transport:5,activities:95},
+weather:"☀️ 25–32°C",hostelRec:"🛏 Carpe Noctem Vitae #1 party hostel (~€18)",lat:47.50,lng:19.04,
+daily:[
+{day:"Day 57 · Aug 3",title:"Arrive Budapest — Ruin Bars",items:["8am: 🚄 Train Ljubljana→Budapest (~8h, Eurail)","4pm: Arrive. Carpe Noctem Vitae hostel.","5pm: Walk to Danube — Parliament view 📸","6pm: Cross Chain Bridge to Buda side","7pm: ⭐ Fisherman's Bastion sunset — free at night! 📸","🍽 Central Market lángos (~€3) ⭐","9pm: 🎵⭐ Szimpla Kert — THE ruin bar. Multi-story, every room different.","11pm: Instant-Fogas — dance floors","2am+: Hostel bar crawls"]},
+{day:"Day 58 · Aug 4",title:"Baths + Night Round 2",items:["💤 11am: Sleep in after ruin bars","12pm: 🍽 Bors GasztroBar soups (~€6)","1:30pm: ⭐ Széchenyi Thermal Baths (~€24) 📸","Chess-playing old men, steam, outdoor pools","Cure that hangover — 2-3 hours soaking","5pm: Jewish Quarter — synagogues, street art","6pm: Gellért Hill — THE best viewpoint 📸","🍽 Karavan Street Food (~€6)","9pm: 🍰 New York Café — most beautiful café in the world (~€10)","10pm: 🍸 360 Bar rooftop (~€8)","11pm: 🎵 Pontoon floating Danube club"]},
+{day:"Day 59 · Aug 5",title:"Budapest Day 3",items:["💤 10am: Sleep in","11am: Parliament tour (~€8)","1pm: 🍽 Frici Papa goulash (~€6)","2:30pm: Danube promenade — Shoes memorial 📸","3:30pm: Buda Castle","5pm: Margaret Island — park, swim, bikes","🍽 Last lángos","8pm: 🛥 Pontoon or 360 Bar or Szimpla one more time","Keep it moderate — Vienna tomorrow"]}
+]},
+
+{id:22,city:"Vienna",country:"🇦🇹",dates:"Aug 6 – 7",days:2,phase:"solo",emoji:"🎻",budget:220,tagline:"Grand finale — schnitzel, Schönbrunn & €4 opera",grad:"linear-gradient(135deg,#370617,#6a040f)",accent:"#6a040f",
+activities:["Schönbrunn gardens FREE (palace ~€22)","Naschmarkt 120+ stalls","Belvedere Klimt Kiss (~€16)","Prater Ferris wheel (~€13)","Stephansdom 343 steps (~€6)","MuseumsQuartier courtyard","Vienna Opera €4 standing room ⭐⭐⭐"],
+eats:["🥩 Figlmüller schnitzel (~€17) ⭐","🌭 Bitzinger Opera sausage (~€5)","🥐 Café Central (~€8)","🍰 Demel Sachertorte (~€7)","🥙 Naschmarkt under €10"],
+nightlife:["🎵 Flex electronic Danube","🍺 Bermuda Triangle bars","🎻 Opera €4 standing ⭐⭐⭐","🌃 Donaukanal bars + street art"],
+transport:{from:"Budapest",method:"🚄 ÖBB Railjet",time:"2.5h",cost:"FREE Eurail",tip:"No reservation needed!"},
+budgetBreakdown:{hostel:62,food:60,transport:0,activities:98},
+weather:"☀️ 24–30°C",hostelRec:"🛏 Wombats Naschmarkt (~€28)",notes:"✈️ Fly home Aug 8.",lat:48.21,lng:16.37,
+daily:[
+{day:"Day 60 · Aug 6",title:"Vienna Day 1",items:["9am: 🚄 Railjet Budapest→Vienna (2.5h, Eurail)","11:30am: Wombats Naschmarkt hostel.","12pm: 🍽 Naschmarkt — falafel, Vietnamese, everything <€10","1:30pm: ⭐ Schönbrunn Palace gardens (FREE!) 📸 + Gloriette viewpoint","4pm: Metro to center","4:30pm: Ringstraße walk — Opera, Parliament","5:30pm: Stephansdom 343 steps (~€6) 📸","6:30pm: MuseumsQuartier courtyard — colorful benches","🍽 ⭐ Figlmüller schnitzel (~€17, BOOK AHEAD)","9pm: 🌃 Donaukanal bars + street art","11pm: 🎵 Flex — electronic club on the Danube"]},
+{day:"Day 61 · Aug 7",title:"Grand Finale ✨",items:["9am: Belvedere — Klimt's The Kiss (~€16) ⭐📸","11am: Walk through Karlsplatz","12pm: 🍽 Café Central — where Freud sat (~€8)","1:30pm: Prater Ferris wheel (~€13) 📸","3:30pm: 🌭 Bitzinger sausage at Opera (~€5)","4:30pm: Last souvenir run","5pm: Back to hostel, pack everything","6pm: ⭐⭐⭐ Vienna State Opera — €4 standing room","Line up 80 min before. Best deal in Europe.","9pm: 🍽 Demel Sachertorte (~€7)","10pm: 🍺 Donaukanal one last time","12am: Final pack. Set 3 alarms.","✈️ Fly home Aug 8. What a trip. 🎉"]}
+]}
+];
+
+const TOTAL = STOPS.filter(s => s.phase === "solo").reduce((a, s) => a + s.budget, 0);
+
+const MUST_DO = {
+  0:"Drink a Maß at a real Bavarian beer garden with Dad",
+  1:"Stand on Charles Bridge at sunset with €1.50 Czech beer",
+  2:"Grand Place at night lit up in gold",
+  3:"Eiffel Tower sparkle at midnight from Pont des Arts",
+  4:"Eat 5+ pintxos at 5 bars — the original bar crawl",
+  5:"Walk Dom Luís I Bridge top level at golden hour",
+  6:"Warm pastel de nata at Pastéis de Belém",
+  7:"Kayak Ponta da Piedade sea caves at sunrise",
+  8:"Plaza de España — takes your breath away",
+  9:"Sagrada Família + Razzmatazz in the same day",
+  10:"Hike Calanque de Sugiton and jump in turquoise water",
+  11:"Lago di Sorapis — turquoise alpine perfection",
+  12:"Float in Paraggi Beach 3 hours. Top-3 moment.",
+  13:"Trevi Fountain at 5:30am — completely alone",
+  14:"€5 pizza at L'Antica Pizzeria da Michele",
+  15:"Float in Balos Beach lagoon with Mom",
+  16:"Kostas souvlaki Syntagma €3",
+  17:"Blue Eye spring — otherworldly water color",
+  18:"1,350 steps to Kotor fortress at sunrise",
+  19:"Hula Hula sunset → Carpe Diem island club",
+  20:"Row to Bled island and ring the wishing bell",
+  21:"Széchenyi Baths → Szimpla Kert → lángos. The perfect day.",
+  22:"€4 standing room Vienna Opera. Grand finale."
+};
+
+const PHOTO_LABELS = {
+  0:["Neuschwanstein Castle","Brandenburg Gate Berlin","Munich Marienplatz","Hofbräuhaus Munich","Rhine Valley"],
+  1:["Prague Charles Bridge sunset","Prague Castle aerial","Prague Old Town Square","Petřín Hill views","Prague astronomical clock"],
+  2:["Brussels Grand Place night","Atomium Brussels","Belgian waffle","Manneken Pis"],
+  3:["Eiffel Tower sunset","Sacré-Cœur Montmartre","Louvre Museum Paris","Seine River night","Sainte-Chapelle stained glass"],
+  4:["La Concha Beach San Sebastian","Pintxos San Sebastian","Monte Igueldo sunset","Parte Vieja old town"],
+  5:["Porto Ribeira waterfront","Dom Luis Bridge Porto","Livraria Lello bookshop","São Bento Station tiles"],
+  6:["Lisbon Tram 28 Alfama","Pastéis de Belém","Bairro Alto nightlife","LX Factory Lisbon","Belém Tower"],
+  7:["Ponta da Piedade Lagos","Benagil Cave Algarve","Praia do Camilo","Seven Hanging Valleys trail"],
+  8:["Plaza de España Seville","Real Alcázar Seville","Metropol Parasol Seville","Flamenco dancer Seville"],
+  9:["Sagrada Familia interior","Park Güell mosaics","Gothic Quarter Barcelona","Bunkers del Carmel","Barceloneta Beach"],
+  10:["Cinque Terre Manarola","Vernazza harbor sunset","Riomaggiore colorful","Monterosso beach","Cinque Terre hiking"],
+  11:["Lago di Sorapis turquoise","Dolomites Cortina","Dito di Dio Sorapis","Passo Tre Croci hike"],
+  12:["Lake Como Bellagio","Varenna Lake Como","Portofino harbor","Paraggi Beach Portofino","Villa Carlotta"],
+  13:["Colosseum Rome","Trevi Fountain","Vatican Sistine Chapel","Trastevere night","Roman Forum"],
+  14:["Amalfi Coast drive","Positano Italy","Pompeii ruins","Path of the Gods","Naples pizza"],
+  15:["Balos Beach Crete","Elafonissi pink beach","Chania harbor","Knossos","Samaria Gorge","Seitan Limania"],
+  16:["Acropolis Athens","Monastiraki market","Lycabettus sunset","Exarchia street art"],
+  17:["Ksamil Beach Albania","Blue Eye spring Albania","Berat thousand windows","Butrint ruins"],
+  18:["Bay of Kotor","Kotor Old Town","Perast Montenegro","Our Lady Rocks"],
+  19:["Dubrovnik walls","Stari Most Mostar","Hvar island","Buža Bar Dubrovnik","Diocletian Palace Split"],
+  20:["Lake Bled Slovenia","Vintgar Gorge","Ljubljana Dragon Bridge","Bled Island church"],
+  21:["Budapest Parliament night","Széchenyi Baths","Szimpla Kert ruin bar","Fisherman Bastion"],
+  22:["Schönbrunn Palace","Naschmarkt Vienna","Vienna State Opera","Prater Ferris Wheel","Belvedere Klimt"]
+};
+
+const PACKING = {
+  "Essentials":["Passport + 2 copies","Eurail pass (printed+app)","Phone+charger+power bank","Universal EU adapter","Travel insurance docs","€200 emergency cash","Debit card (no foreign fees)","Day backpack 20L","Parental consent letter"],
+  "Clothes":["5 quick-dry shirts","2 shorts","1 long pants","1 light jacket","7 underwear","5 socks","Swimsuit","Flip flops + sneakers"],
+  "Toiletries":["Sunscreen SPF 50","Toothbrush+paste","Deodorant","Shampoo bar","Microfiber towel","Razor","Ibuprofen+bandaids"],
+  "Tech":["Earbuds","Kindle/book","Journal+pen","GoPro/camera","Portable speaker","Offline maps"]
+};
+
+// State
+let V = "itinerary", openS = new Set([0]), tabs = {}, openDT = new Set(), openDays = new Set(), chkP = new Set(), search = "";
+
+const VW = ["itinerary","timeline","map","budget","packing"];
+const VL = ["📋 Stops","📅 Timeline","🗺 Map","💰 Budget","🎒 Packing"];
+
+function sw(v) {
+  V = v;
+  document.querySelectorAll(".tab").forEach((t,i) => t.classList.toggle("active", VW[i] === v));
+  go();
+  if (v === "map") loadLeaflet(initMap);
+}
+
+document.getElementById("tabBar").innerHTML = VL.map((l,i) =>
+  `<button class="tab${i===0?" active":""}" onclick="sw('${VW[i]}')">${l}</button>`
+).join("");
+
+function cd() {
+  const t = new Date("2026-06-08"), n = new Date(), d = t - n;
+  const e = document.getElementById("countdown");
+  if (d <= 0) { e.innerHTML = "🎉 <b>Trip underway!</b>"; return; }
+  e.innerHTML = `✈️ <span class="cd-num">${Math.floor(d/864e5)}</span>d <span class="cd-num">${Math.floor((d%864e5)/36e5)}</span>h until takeoff`;
+}
+cd();
+setInterval(cd, 60000);
+
+function togS(i) { openS.has(i) ? openS.delete(i) : openS.add(i); go(); }
+function expAll() { STOPS.forEach(s => openS.add(s.id)); go(); }
+function colAll() { openS.clear(); go(); }
+function sTab(i, t) { tabs[i] = t; go(); }
+function togDT(i) { openDT.has(i) ? openDT.delete(i) : openDT.add(i); go(); }
+function togDay(key) { openDays.has(key) ? openDays.delete(key) : openDays.add(key); go(); }
+function togP(i) { chkP.has(i) ? chkP.delete(i) : chkP.add(i); go(); }
+function onSrch(e) { search = e.target.value.toLowerCase(); go(); }
+
+function go() {
+  const a = document.getElementById("app");
+  if (V === "itinerary") rItin(a);
+  else if (V === "timeline") rTL(a);
+  else if (V === "map") rMap(a);
+  else if (V === "budget") rBud(a);
+  else rPk(a);
+}
+
+function rItin(el) {
+  const f = STOPS.filter(s => !search || [s.city, s.tagline, ...(s.activities||[]), ...(s.eats||[]), MUST_DO[s.id]||""].join(" ").toLowerCase().includes(search));
+  el.innerHTML = `
+    <div class="progress-strip">${STOPS.map(s=>`<div class="progress-dot" style="background:${s.phase==="dad"?"#52b788":s.phase==="mom"?"#4cc9f0":"#f72585"}"></div>`).join("")}</div>
+    <div style="display:flex;gap:6px;margin-bottom:8px;font-size:10px;justify-content:center;color:var(--muted)">
+      <span style="color:#52b788">■ Dad</span><span style="color:#f72585;margin-left:8px">■ Solo</span><span style="color:#4cc9f0;margin-left:8px">■ Mom</span>
+    </div>
+    <div class="toolbar">
+      <button onclick="expAll()">Expand all</button>
+      <input class="search-box" placeholder="Search cities, food, activities..." value="${search}" oninput="onSrch(event)">
+      <button onclick="colAll()">Collapse all</button>
+    </div>
+    ${f.map(rS).join("")}
+    <div style="margin-top:30px;padding:18px;background:var(--card2);border-radius:14px;font-size:12px;color:var(--dim);line-height:1.8;text-align:center">
+      <strong style="color:var(--pink)">⚡</strong> Trainline · Seat61 · Omio · FlixBus · Ryanair · Hostelworld · Eurail · b-europe.com
+    </div>`;
+}
+
+function rS(s) {
+  const o = openS.has(s.id), f = s.phase !== "solo", t = tabs[s.id] || "do";
+  const pd = s.budget > 0 ? Math.round(s.budget / s.days) : 0;
+  let b = "";
+
+  if (o) {
+    const n = s.notes && !s.activities?.length ? `<p style="color:var(--muted);font-size:13px;font-style:italic;margin:14px 0 0">${s.notes}</p>` : "";
+    const md = MUST_DO[s.id];
+    const mh = md ? `<div class="must-do"><div class="must-do-label">🔥 Don't Miss</div><div class="must-do-text">${md}</div></div>` : "";
+    const ph = PHOTO_LABELS[s.id] || [];
+    const c = ph.length ? `<div style="margin-top:12px"><div style="font-size:11px;color:var(--pink);font-weight:700;margin-bottom:8px">📸 SEE PHOTOS</div><div class="photo-grid">${ph.map(p=>`<a class="photo-pill" href="https://www.google.com/search?udm=2&q=${encodeURIComponent(p)}" target="_blank" rel="noopener">🖼 ${p}</a>`).join("")}</div></div>` : "";
+    const w = s.weather ? `<div class="weather">${s.weather}</div>` : "";
+    const tr = s.transport ? `<div class="transport"><div style="font-size:11px;color:var(--pink);font-weight:700;margin-bottom:5px">🚆 FROM ${s.transport.from}</div><div style="font-size:13px;color:#fff;font-weight:600">${s.transport.method}</div><div style="font-size:12px;color:var(--muted);margin-top:3px">⏱ ${s.transport.time} · 💵 ${s.transport.cost}</div><div style="font-size:11px;color:var(--blue);margin-top:5px">💡 ${s.transport.tip}</div></div>` : "";
+
+    let st = "";
+    if (s.activities?.length) {
+      const tc = {do:"#7209b7",eat:"#e07c24",night:"#3a0ca3"};
+      const tl = {do:"⚡ Do",eat:"🍽 Eat",night:"🌙 Night"};
+      const tt = {do:"THINGS TO DO",eat:"WHERE TO EAT",night:"NIGHTLIFE"};
+      const ti = {do:"⚡",eat:"🍽",night:"🌙"};
+      const items = t==="do" ? s.activities : t==="eat" ? s.eats : s.nightlife;
+      st = `<div class="sec-tabs">${["do","eat","night"].map(k=>`<button class="sec-tab" style="background:${t===k?tc[k]:"#ffffff0a"};color:${t===k?"#fff":"var(--dim)"}" onclick="sTab(${s.id},'${k}')">${tl[k]}</button>`).join("")}</div>
+        <div style="font-size:11px;font-weight:700;margin-bottom:8px;color:${tc[t]}">${ti[t]} ${tt[t]}</div>
+        ${(items||[]).map(a=>`<div class="si"><span class="b">›</span><span>${a}</span></div>`).join("")}`;
+    }
+
+    let dt = "";
+    if (s.dayTrip) {
+      const dp = openDT.has(s.id);
+      dt = `<div class="daytrip"><div class="daytrip-hd" onclick="togDT(${s.id})"><span>${s.dayTrip.name}</span><span style="color:var(--dim);font-size:16px;display:inline-block;transform:${dp?"rotate(180deg)":""};transition:.2s">▾</span></div>${dp?`<div style="padding:0 14px 14px"><p style="font-size:12px;color:#ffffffaa;line-height:1.6;margin:0 0 10px">${s.dayTrip.desc}</p>${s.dayTrip.activities.map(a=>`<div class="dti"><span style="color:rgba(247,37,133,.5)">★</span><span>${a}</span></div>`).join("")}<div style="margin-top:10px;font-size:11px;color:var(--blue)">💵 ${s.dayTrip.cost}</div><div style="font-size:11px;color:var(--muted);margin-top:4px">💡 ${s.dayTrip.tip}</div></div>`:""}</div>`;
+    }
+
+    let sched = "";
+    if (s.daily && s.daily.length) {
+      sched = `<div class="sched-wrap"><div class="sched-label">📅 Daily Schedule</div>${s.daily.map((d,di) => {
+        const key = s.id + "-" + di;
+        const isOpen = openDays.has(key);
+        return `<div class="sched-day">
+          <div class="sched-day-hd" onclick="togDay('${key}')">
+            <div><span class="sd-title">${d.day}</span><span class="sd-sub">${d.title}</span></div>
+            <span class="sd-chev${isOpen?" sdo":""}">▾</span>
+          </div>
+          ${isOpen ? `<div class="sched-day-body">${d.items.map(item => `<div class="sched-item">${item}</div>`).join("")}</div>` : ""}
+        </div>`;
+      }).join("")}</div>`;
+    }
+
+    const hs = s.hostelRec ? `<div class="hostel">${s.hostelRec}</div>` : "";
+    const bc = s.budgetBreakdown ? `<div class="bchips">${Object.entries(s.budgetBreakdown).map(([k,v])=>`<div class="bchip">${{hostel:"🛏",food:"🍽",transport:"🚄",activities:"🎟"}[k]} $${v}</div>`).join("")}</div>` : "";
+    const nb = s.notes && s.activities?.length ? `<p style="color:var(--dim);font-size:11px;margin-top:10px;font-style:italic">📌 ${s.notes}</p>` : "";
+
+    b = `<div class="stop-body">${n}${mh}${c}${w}${tr}${st}${dt}${sched}${hs}${bc}${nb}</div>`;
+  }
+
+  return `<div class="stop${f?" family":""}">
+    <div class="stop-header" onclick="togS(${s.id})">
+      <div class="stop-icon" style="background:${s.grad}">${s.emoji}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-size:17px;font-weight:700">${s.city}</span>
+          <span style="font-size:12px;color:var(--dim)">${s.country}</span>
+          ${f?`<span style="font-size:10px;background:rgba(247,37,133,.12);color:var(--pink);padding:2px 9px;border-radius:20px;font-weight:600">with ${s.phase==="dad"?"Dad":"Mom"}</span>`:""}
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px">${s.dates} · ${s.days}d${s.budget>0?`<span style="color:var(--blue);margin-left:8px;font-weight:600">~$${s.budget}</span><span class="perday">($${pd}/day)</span>`:""}</div>
+        <div style="font-size:11px;color:var(--dim);margin-top:2px">${s.tagline}</div>
+      </div>
+      <span class="chevron${o?" open":""}">▾</span>
+    </div>${b}
+  </div>`;
+}
+
+function rTL(el) {
+  const cols = {dad:"#52b788",mom:"#4cc9f0",solo:"#f72585"};
+  const td = STOPS.reduce((a,s) => a + s.days, 0);
+  let dc = 0;
+  const sd = STOPS.filter(s=>s.phase==="solo").reduce((a,s)=>a+s.days,0);
+  el.innerHTML = `
+    <div style="margin-bottom:20px">
+      <div style="font-size:15px;font-weight:700;margin-bottom:6px">📅 Timeline</div>
+      <div style="font-size:12px;color:var(--muted)">${td}-day journey. Click any stop.</div>
+    </div>
+    <div style="display:flex;height:28px;border-radius:10px;overflow:hidden;margin-bottom:24px;gap:1px">
+      ${STOPS.map(s=>`<div style="width:${s.days/td*100}%;background:${cols[s.phase]};display:flex;align-items:center;justify-content:center;font-size:${s.days>2?11:8}px;color:#fff;font-weight:600;cursor:pointer" onclick="sw('itinerary');openS.add(${s.id});go()" title="${s.city} (${s.days}d)">${s.days>1?s.emoji:""}</div>`).join("")}
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:20px;font-size:10px;justify-content:center;color:var(--muted)">
+      <span style="color:#52b788">■ Dad 9d</span><span style="color:#f72585;margin-left:8px">■ Solo 44d</span><span style="color:#4cc9f0;margin-left:8px">■ Mom 8d</span>
+    </div>
+    ${STOPS.map((s,i) => {
+      dc += s.days;
+      const start = dc - s.days + 1;
+      const md = MUST_DO[s.id] || "";
+      const ppd = s.budget > 0 ? Math.round(s.budget/s.days) : 0;
+      return `<div class="tl-stop" onclick="sw('itinerary');openS.add(${s.id});go()">
+        <div style="display:flex;flex-direction:column;align-items:center;min-width:28px">
+          <div class="tl-dot" style="background:${cols[s.phase]};border-color:${cols[s.phase]}"></div>
+          ${i < STOPS.length-1 ? '<div class="tl-line" style="flex:1"></div>' : ""}
+        </div>
+        <div style="flex:1;padding-bottom:4px">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span style="font-size:15px;font-weight:700">${s.emoji} ${s.city}</span>
+            <span style="font-size:11px;color:var(--dim)">${s.country}</span>
+            ${s.phase!=="solo"?`<span style="font-size:9px;background:rgba(247,37,133,.12);color:var(--pink);padding:2px 7px;border-radius:12px;font-weight:600">with ${s.phase==="dad"?"Dad":"Mom"}</span>`:""}
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:3px">
+            ${s.dates} · ${s.days}d · Day ${start}${s.days>1?"-"+dc:""} of ${td}
+            ${s.budget>0?` · <span style="color:var(--blue);font-weight:600">$${s.budget}</span> <span style="color:var(--green);font-size:10px">($${ppd}/d)</span>`:""}
+          </div>
+          ${md?`<div style="font-size:11px;color:var(--pink);margin-top:4px;opacity:.8">🔥 ${md}</div>`:""}
+          ${s.transport?`<div style="font-size:10px;color:var(--dim);margin-top:3px">↗ ${s.transport.method} · ${s.transport.time}</div>`:""}
+        </div>
+      </div>`;
+    }).join("")}
+    <div style="margin-top:20px;padding:16px;background:var(--card2);border-radius:14px;text-align:center">
+      <div style="font-size:13px;color:var(--muted)"><span style="color:#fff;font-weight:700">${td} days</span> · <span style="color:#fff;font-weight:700">15 countries</span></div>
+      <div style="font-size:12px;color:var(--dim);margin-top:4px">Solo: <span style="color:var(--blue);font-weight:700">$${TOTAL}</span> · <span style="color:var(--green);font-weight:600">$${Math.round(TOTAL/sd)}/day avg</span></div>
+    </div>`;
+}
+
+let leafletLoaded = false, mapI = null;
+function loadLeaflet(cb) {
+  if (leafletLoaded) { cb(); return; }
+  const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"; document.head.appendChild(l);
+  const s = document.createElement("script"); s.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+  s.onload = () => { leafletLoaded = true; cb(); };
+  s.onerror = () => { const e = document.getElementById("mL"); if(e) e.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;color:var(--muted)"><div style="font-size:36px">🗺️</div><a href="https://www.google.com/maps/dir/Munich/Prague/Brussels/Paris/San+Sebastian/Porto/Lisbon/Lagos+Portugal/Seville/Barcelona/Marseille/Riomaggiore/Lake+Como/Rome/Naples/Athens/Chania/Saranda/Kotor/Dubrovnik/Split/Ljubljana/Budapest/Vienna" target="_blank" style="color:var(--blue)">Open in Google Maps →</a></div>'; };
+  document.head.appendChild(s);
+}
+
+function rMap(el) {
+  el.innerHTML = `<div class="map-wrap">
+    <div style="font-size:15px;font-weight:700;margin-bottom:14px">🗺 Route</div>
+    <div id="mL" style="height:500px;border-radius:14px;overflow:hidden;background:#0a0a1a"></div>
+    <div class="map-legend"><span>🟢 Dad</span><span>🔴 Solo</span><span>🔵 Mom</span></div>
+    <div style="margin-top:12px;text-align:center">
+      <a href="https://www.google.com/maps/dir/Munich/Prague/Brussels/Paris/San+Sebastian/Porto/Lisbon/Lagos+Portugal/Seville/Barcelona/Riomaggiore/Cortina/Lake+Como/Rome/Naples/Athens/Chania/Saranda/Kotor/Dubrovnik/Split/Ljubljana/Budapest/Vienna" target="_blank" style="color:var(--blue);font-size:12px;text-decoration:none;font-weight:600">🔗 Google Maps full route →</a>
+    </div>
+  </div>`;
+}
+
+function initMap() {
+  if (mapI) { mapI.remove(); mapI = null; }
+  const el = document.getElementById("mL");
+  if (!el || !window.L) return;
+  mapI = L.map(el, {center:[44,12],zoom:4,scrollWheelZoom:true});
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {attribution:"© OSM © CARTO",subdomains:"abcd",maxZoom:18}).addTo(mapI);
+  const co = STOPS.map(s => [s.lat, s.lng]);
+  L.polyline(co, {color:"#f72585",weight:3,opacity:.7,dashArray:"10 6"}).addTo(mapI);
+  const cl = {dad:"#52b788",mom:"#4cc9f0",solo:"#f72585"};
+  STOPS.forEach((s, i) => {
+    const c = cl[s.phase], sz = s.days>5?36:s.days>2?30:26;
+    const ic = L.divIcon({className:"",html:`<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:${c};border:2.5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:${sz>30?15:12}px;box-shadow:0 3px 12px rgba(0,0,0,.5);cursor:pointer;position:relative">${s.emoji}<div style="position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;color:#fff;background:${c};padding:1px 6px;border-radius:8px;white-space:nowrap;font-family:DM Sans,sans-serif">${i+1}</div></div>`,iconSize:[sz,sz],iconAnchor:[sz/2,sz/2]});
+    const pd = s.budget > 0 ? Math.round(s.budget/s.days) : 0;
+    L.marker([s.lat,s.lng],{icon:ic}).addTo(mapI).bindPopup(`<div style="min-width:200px;font-family:DM Sans,sans-serif"><b>${s.emoji} ${s.city}</b> ${s.country}<br><span style="color:#aaa;font-size:11px">${s.dates} · ${s.days}d</span><br><span style="color:#ccc;font-size:11px">${s.tagline}</span>${s.budget>0?`<br><span style="color:#4cc9f0;font-weight:700">~$${s.budget}</span> <span style="color:#52b788;font-size:10px">($${pd}/d)</span>`:""}</div>`,{maxWidth:280});
+  });
+  mapI.fitBounds(co, {padding:[30,30]});
+  setTimeout(() => mapI.invalidateSize(), 100);
+}
+
+function rBud(el) {
+  const sp = TOTAL, tot = 6000, pc = Math.round(sp/tot*100);
+  const ct = {hostel:0,food:0,transport:0,activities:0};
+  STOPS.forEach(s => { if(s.budgetBreakdown) Object.keys(ct).forEach(k => ct[k] += s.budgetBreakdown[k]); });
+  const cc = {hostel:"#f72585",food:"#e07c24",transport:"#3a0ca3",activities:"#4cc9f0"};
+  const cn = {hostel:"🛏 Hostels",food:"🍽 Food",transport:"🚄 Transport",activities:"🎟 Activities"};
+  const cT = Object.values(ct).reduce((a,b) => a+b, 0);
+  let ag = -90;
+  const ar = Object.entries(ct).map(([k,v]) => {
+    const p = v/cT, s = ag; ag += p*360;
+    const r=70, cx=90, cy=90, sr=s*Math.PI/180, er=ag*Math.PI/180;
+    return `<path d="M${cx},${cy} L${cx+r*Math.cos(sr)},${cy+r*Math.sin(sr)} A${r},${r} 0 ${p>.5?1:0},1 ${cx+r*Math.cos(er)},${cy+r*Math.sin(er)} Z" fill="${cc[k]}" opacity=".85"/>`;
+  }).join("");
+  const sd = STOPS.filter(s=>s.phase==="solo").reduce((a,s)=>a+s.days,0);
+  el.innerHTML = `
+    <div class="budget-card">
+      <div style="display:flex;justify-content:space-between"><span style="font-weight:700;font-size:16px">💰 Budget</span><span style="color:var(--blue);font-weight:700;font-size:16px">$${tot-sp} left</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pc}%"></div></div>
+      <div style="display:flex;justify-content:space-between;color:var(--muted);font-size:12px"><span>Solo: ~$${sp}</span><span>${pc}% of $6k</span></div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:16px">
+        ${Object.entries(ct).map(([k,v])=>`<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#ffffffbb"><div style="width:10px;height:10px;border-radius:3px;background:${cc[k]}"></div>${cn[k]}: $${v}</div>`).join("")}
+      </div>
+      <div style="display:flex;justify-content:center;margin-top:20px">
+        <svg width="180" height="180" viewBox="0 0 180 180">${ar}<circle cx="90" cy="90" r="42" fill="#111125"/><text x="90" y="86" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">$${cT}</text><text x="90" y="102" text-anchor="middle" fill="#ffffff66" font-size="10">total solo</text></svg>
+      </div>
+      <div style="margin-top:10px;color:var(--dim);font-size:11px;font-style:italic">* Parent weeks $0. ~$${tot-sp} buffer for extras.</div>
+    </div>
+    <h3 style="font-size:15px;margin-bottom:12px;font-weight:700">Per stop</h3>
+    ${STOPS.filter(s=>s.budget>0).map(s=>`<div class="sbrow"><span style="color:#ffffffcc">${s.emoji} ${s.city} <span style="color:var(--dim)">(${s.days}d)</span></span><span><span style="color:var(--blue);font-weight:700">$${s.budget}</span><span class="perday">$${Math.round(s.budget/s.days)}/d</span></span></div>`).join("")}
+    <div style="margin-top:12px;padding:12px 16px;background:#ffffff08;border-radius:12px;display:flex;justify-content:space-between">
+      <span style="font-size:12px;color:var(--muted)">Daily avg (solo)</span>
+      <span style="font-size:14px;font-weight:700;color:var(--green)">$${Math.round(TOTAL/sd)}/day</span>
+    </div>
+    <div style="margin-top:18px;padding:18px;background:var(--card2);border-radius:14px;font-size:13px;color:var(--muted);line-height:1.9">
+      <strong style="color:#fff">💡 Tips</strong><br>
+      › Eurail on every eligible train<br>
+      › Book TGV/Eurostar 3mo early<br>
+      › FlixBus Balkans + overnights<br>
+      › Ryanair carry-on only<br>
+      › Cook 2-3 nights/week<br>
+      › Albania & Hungary absurdly cheap<br>
+      › €4 Vienna Opera standing<br>
+      › Museums free under 18/25!
+    </div>`;
+}
+
+function rPk(el) {
+  const all = Object.values(PACKING).flat();
+  el.innerHTML = `
+    <div class="packing">
+      <h3>🎒 Packing</h3>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:18px">Tap to check. 61 days, one bag!</p>
+      ${Object.entries(PACKING).map(([cat,items])=>`
+        <div style="margin-bottom:18px">
+          <div style="font-size:12px;color:var(--pink);font-weight:700;margin-bottom:8px">${cat}</div>
+          <div class="pgrid">${items.map(i=>`<div class="pitem${chkP.has(i)?" chk":""}" onclick="togP(\`${i}\`)">${chkP.has(i)?"✓ ":""}${i}</div>`).join("")}</div>
+        </div>`).join("")}
+      <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--dim)">${chkP.size}/${all.length} packed</div>
+    </div>
+    <div style="margin-top:20px;padding:18px;background:var(--card2);border-radius:14px">
+      <h3 style="font-size:15px;margin-bottom:12px">📱 Apps</h3>
+      <div class="pgrid">${["Eurail/Rail Planner","Google Maps offline","Hostelworld","FlixBus","Ryanair","Omio","Google Translate","Wise","Trainline","XE Currency","Maps.me","Rome2Rio"].map(a=>`<div style="font-size:12px;color:var(--muted);padding:8px 10px;background:#ffffff06;border-radius:8px">📲 ${a}</div>`).join("")}</div>
+    </div>
+    <div style="margin-top:20px;padding:18px;background:var(--card2);border-radius:14px">
+      <h3 style="font-size:15px;margin-bottom:12px">📋 Book NOW</h3>
+      <div style="font-size:12px;color:var(--muted);line-height:2">
+        ${["Eurail 2-month pass","Sagrada Família Barcelona","Colosseum + Vatican Rome","Real Alcázar Seville","Eurostar Brussels→Paris res","TGV Paris→Hendaye res","Ponta da Piedade kayak","Benagil Cave boat","Flight Prague→Brussels","Flight Seville→Barcelona","Flight Naples/Rome→Athens","Flight Crete→Athens","Flight home VIE→ORD Aug 8","All hostel reservations","Travel insurance","Parental consent letter"].map(b=>`<div>☐ ${b}</div>`).join("")}
+      </div>
+    </div>`;
+}
+
+// Init
+go();
+</script>
+</body>
+</html>
